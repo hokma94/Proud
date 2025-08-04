@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,11 +14,9 @@ import {
   UIManager,
   Platform,
   useColorScheme,
-  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { firestoreHelpers } from './firebase';
-import { Linking } from 'react-native';
+import { firestoreHelpers } from '../firebase';
 
 // Android에서 LayoutAnimation 활성화
 if (Platform.OS === 'android') {
@@ -82,126 +80,11 @@ const formatDate = (date: Date) => {
   });
 };
 
-// 프로토타입 선택 화면
-const PrototypeSelector = ({ onSelectPrototype }: { onSelectPrototype: (prototype: string) => void }) => {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const theme = colors[isDark ? 'dark' : 'light'];
+interface MyTasksAppProps {
+  onBack: () => void;
+}
 
-  const prototypes = [
-    {
-      id: 'todo',
-      title: 'My Tasks',
-      description: '할일 관리 앱 (Firebase 실시간 동기화)',
-      icon: '📝',
-      color: '#667eea',
-    },
-    {
-      id: '3d-gallery',
-      title: '3D Gallery',
-      description: '3D 갤러리 및 전시 공간 (실행 가능)',
-      icon: '🏛️',
-      color: '#f59e0b',
-    },
-    {
-      id: 'feed-view',
-      title: 'Feed View',
-      description: '소셜 피드 및 콘텐츠 뷰어 (준비 중)',
-      icon: '📱',
-      color: '#ef4444',
-    },
-    {
-      id: 'grim-store',
-      title: 'Grim Store',
-      description: '그림을 사고 팔 수 있는 앱 (준비 중)',
-      icon: '🛒',
-      color: '#8b5cf6',
-    },
-    {
-      id: 'arts-culture',
-      title: 'Arts&Culture',
-      description: '예술과 문화를 탐험하는 앱 (준비 중)',
-      icon: '🎨',
-      color: '#10b981',
-    },
-    {
-      id: 'mini-games',
-      title: 'Mini Games',
-      description: '미니 게임 컬렉션 (준비 중)',
-      icon: '🎮',
-      color: '#06b6d4',
-    },
-    {
-      id: 'event-1',
-      title: 'Event #1',
-      description: '특별 이벤트 및 프로모션 (준비 중)',
-      icon: '🎉',
-      color: '#ec4899',
-    },
-  ];
-
-  return (
-    <LinearGradient
-      colors={[theme.primary, theme.secondary]}
-      style={styles.gradientContainer}
-    >
-      <SafeAreaView style={styles.container}>
-        <StatusBar 
-          barStyle={isDark ? 'light-content' : 'dark-content'} 
-          backgroundColor="transparent"
-          translucent
-        />
-        
-        {/* 상단 제목 */}
-        <View style={[styles.header, { backgroundColor: 'transparent' }]}>
-          <Text style={[styles.title, { color: '#ffffff' }]}>Prototype Hub</Text>
-          <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
-            다양한 프로토타입을 테스트해보세요
-          </Text>
-        </View>
-
-        {/* 프로토타입 목록 */}
-        <ScrollView style={styles.prototypeList} showsVerticalScrollIndicator={false}>
-          {prototypes.map((prototype) => (
-            <TouchableOpacity
-              key={prototype.id}
-              style={[
-                styles.prototypeCard,
-                {
-                  backgroundColor: theme.surface,
-                  borderColor: theme.border,
-                  shadowColor: theme.shadow,
-                },
-              ]}
-              onPress={() => onSelectPrototype(prototype.id)}
-              activeOpacity={0.8}
-            >
-              <View style={styles.prototypeHeader}>
-                <Text style={styles.prototypeIcon}>{prototype.icon}</Text>
-                <View style={styles.prototypeInfo}>
-                  <Text style={[styles.prototypeTitle, { color: theme.text }]}>
-                    {prototype.title}
-                  </Text>
-                  <Text style={[styles.prototypeDescription, { color: theme.textSecondary }]}>
-                    {prototype.description}
-                  </Text>
-                </View>
-              </View>
-              <View style={[styles.prototypeStatus, { backgroundColor: prototype.color }]}>
-                <Text style={styles.prototypeStatusText}>
-                  {prototype.id === 'todo' || prototype.id === '3d-gallery' ? '실행 가능' : '준비 중'}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
-  );
-};
-
-// My Tasks 앱 컴포넌트
-const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
+const MyTasksApp: React.FC<MyTasksAppProps> = ({ onBack }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const theme = colors[isDark ? 'dark' : 'light'];
@@ -589,79 +472,6 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   );
 };
 
-// 메인 앱 컴포넌트
-export default function App() {
-  const [currentPrototype, setCurrentPrototype] = useState<string | null>(null);
-
-  const handleSelectPrototype = (prototypeId: string) => {
-    setCurrentPrototype(prototypeId);
-  };
-
-  const handleBackToSelector = () => {
-    setCurrentPrototype(null);
-  };
-
-  // 프로토타입별 컴포넌트 렌더링
-  const renderPrototype = () => {
-    switch (currentPrototype) {
-      case 'todo':
-        return <MyTasksApp onBack={handleBackToSelector} />;
-      case '3d-gallery':
-        Linking.openURL('https://ph-poc-3dgallery.netlify.app/');
-        return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
-      case 'arts-culture':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Arts&Culture - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'feed-view':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Feed View - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'grim-store':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Grim Store - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'mini-games':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Mini Games - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'event-1':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Event #1 - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      default:
-        return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
-    }
-  };
-
-  return renderPrototype();
-}
-
 const styles = StyleSheet.create({
   gradientContainer: {
     flex: 1,
@@ -700,78 +510,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   backButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  prototypeList: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  prototypeCard: {
-    marginBottom: 16,
-    padding: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  prototypeHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  prototypeIcon: {
-    fontSize: 32,
-    marginRight: 16,
-  },
-  prototypeInfo: {
-    flex: 1,
-  },
-  prototypeTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  prototypeDescription: {
-    fontSize: 14,
-  },
-  prototypeStatus: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  prototypeStatusText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  comingSoonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
-  },
-  comingSoonText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#64748b',
-    marginBottom: 30,
-  },
-  backToSelectorButton: {
-    backgroundColor: '#667eea',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  backToSelectorButtonText: {
-    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -931,3 +669,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+export default MyTasksApp; 
