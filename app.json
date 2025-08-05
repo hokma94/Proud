@@ -25,7 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "scope": "/",
+      "startUrl": "/",
+      "display": "standalone",
+      "themeColor": "#667eea",
+      "backgroundColor": "#667eea"
     }
   }
 }

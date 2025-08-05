@@ -127,7 +127,14 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
                   </Text>
                 </View>
               </View>
-              <View style={[styles.prototypeStatus, { backgroundColor: prototype.color }]}>
+              <View style={[
+                styles.prototypeStatus, 
+                { 
+                  backgroundColor: (prototype.id === 'todo' || prototype.id === '3d-gallery') 
+                    ? '#fbbf24' // 노란색 (실행 가능)
+                    : '#9ca3af' // 회색 (준비 중)
+                }
+              ]}>
                 <Text style={styles.prototypeStatusText}>
                   {prototype.id === 'todo' || prototype.id === '3d-gallery' ? '실행 가능' : '준비 중'}
                 </Text>
