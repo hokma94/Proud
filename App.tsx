@@ -5,7 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Pressable,
   FlatList,
   Alert,
   SafeAreaView,
@@ -96,7 +95,6 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   const [inputText, setInputText] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [testMessage, setTestMessage] = useState('');
 
   // Firestore 실시간 리스너 설정
   useEffect(() => {
@@ -196,21 +194,13 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   // 개별 할일 영구삭제 함수
   const permanentlyDeleteTask = useCallback(async (id: string) => {
     console.log('영구삭제 함수 호출됨, ID:', id);
-    console.log('=== 디버깅 시작 ===');
-    console.log('현재 시간:', new Date().toISOString());
-    console.log('TEST: 이 메시지가 보이면 새로운 코드가 실행됩니다!');
     
     // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
       console.log('영구삭제 확인됨, ID:', id);
-      console.log('firestoreHelpers 객체 확인:', firestoreHelpers);
-      console.log('permanentlyDeleteTask 함수 확인:', firestoreHelpers.permanentlyDeleteTask);
       try {
-        console.log('Firebase 함수 호출 시작...');
-        const result = await firestoreHelpers.permanentlyDeleteTask(id);
-        console.log('Firebase 함수 호출 완료, 결과:', result);
+        await firestoreHelpers.permanentlyDeleteTask(id);
         console.log('할일 영구삭제 완료, ID:', id);
-        // window.alert 대신 콘솔에 메시지 출력
         console.log('✅ 할일이 영구삭제되었습니다.');
       } catch (error) {
         console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
@@ -245,9 +235,6 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   // 모든 삭제된 할일 영구삭제 함수
   const permanentlyDeleteAllDeletedTasks = useCallback(async () => {
     console.log('전체 영구삭제 함수 호출됨, 삭제된 할일 개수:', deletedTasks.length);
-    console.log('=== 전체 삭제 디버깅 시작 ===');
-    console.log('현재 시간:', new Date().toISOString());
-    console.log('TEST: 전체 삭제 - 이 메시지가 보이면 새로운 코드가 실행됩니다!');
     
     if (deletedTasks.length === 0) {
       if (typeof window !== 'undefined') {
@@ -261,14 +248,9 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
     // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
       console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
-      console.log('firestoreHelpers 객체 확인:', firestoreHelpers);
-      console.log('permanentlyDeleteAllDeletedTasks 함수 확인:', firestoreHelpers.permanentlyDeleteAllDeletedTasks);
       try {
-        console.log('Firebase 전체 삭제 함수 호출 시작...');
-        const result = await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
-        console.log('Firebase 전체 삭제 함수 호출 완료, 결과:', result);
+        await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
         console.log('모든 삭제된 할일 영구삭제 완료');
-        // window.alert 대신 콘솔에 메시지 출력
         console.log('✅ 모든 삭제된 할일이 영구삭제되었습니다.');
       } catch (error) {
         console.error('전체 영구삭제 실패:', error);
@@ -492,14 +474,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           </Text>
         </View>
 
-        {/* 테스트 메시지 */}
-        {testMessage && (
-          <View style={[styles.testMessageContainer, { backgroundColor: theme.success }]}>
-            <Text style={[styles.testMessageText, { color: '#ffffff' }]}>
-              {testMessage}
-            </Text>
-          </View>
-        )}
+
 
 
 
@@ -951,18 +926,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  testMessageContainer: {
-    marginHorizontal: 20,
-    marginVertical: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  testMessageText: {
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
+
 });
