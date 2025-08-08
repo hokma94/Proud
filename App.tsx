@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Pressable,
   FlatList,
   Alert,
   SafeAreaView,
@@ -383,7 +384,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         >
           <Text style={styles.restoreButtonText}>복원</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        <Pressable
           style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
           onPress={() => {
             console.log('영구삭제 버튼 클릭됨, ID:', item.id);
@@ -394,10 +395,9 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
               Alert.alert('테스트', `영구삭제 테스트: ${item.id}`);
             }
           }}
-          activeOpacity={0.8}
         >
           <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   ), [theme, restoreTask, permanentlyDeleteTask]);
@@ -533,7 +533,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           <>
             {deletedTasks.length > 0 && (
               <View style={styles.permanentlyDeleteAllContainer}>
-                <TouchableOpacity
+                <Pressable
                   style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
                   onPress={() => {
                     console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
@@ -544,12 +544,11 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
                       Alert.alert('테스트', `전체 영구삭제 테스트: ${deletedTasks.length}개`);
                     }
                   }}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.permanentlyDeleteAllButtonText}>
-                    모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
-                  </Text>
-                </TouchableOpacity>
+                                  >
+                    <Text style={styles.permanentlyDeleteAllButtonText}>
+                      모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
+                    </Text>
+                  </Pressable>
               </View>
             )}
             <FlatList
