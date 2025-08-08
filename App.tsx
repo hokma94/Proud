@@ -205,11 +205,18 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           onPress: async () => {
             console.log('영구삭제 확인됨, ID:', id);
             try {
-              await firestoreHelpers.permanentlyDeleteTask(id);
-              console.log('할일 영구삭제 완료, ID:', id);
+              // 테스트: 영구삭제 대신 소프트 삭제로 변경
+              console.log('테스트: 영구삭제 대신 소프트 삭제로 변경');
+              await firestoreHelpers.updateTask(id, {
+                isDeleted: true,
+                deletedAt: new Date(),
+                updatedAt: new Date(),
+              });
+              console.log('할일 소프트 삭제 완료 (테스트), ID:', id);
+              Alert.alert('테스트 완료', '소프트 삭제로 변경되었습니다. (영구삭제 테스트)');
             } catch (error) {
-              console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
-              Alert.alert('오류', '할일 영구삭제에 실패했습니다.');
+              console.error('할일 삭제 실패, ID:', id, 'Error:', error);
+              Alert.alert('오류', '할일 삭제에 실패했습니다.');
             }
           },
         },
@@ -237,12 +244,21 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           onPress: async () => {
             console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
             try {
-              await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
-              console.log('모든 삭제된 할일 영구삭제 완료');
-              Alert.alert('완료', '모든 삭제된 할일이 영구삭제되었습니다.');
+              // 테스트: 전체 영구삭제 대신 개별 업데이트로 변경
+              console.log('테스트: 전체 영구삭제 대신 개별 업데이트로 변경');
+              const updatePromises = deletedTasks.map(task => 
+                firestoreHelpers.updateTask(task.id, {
+                  isDeleted: true,
+                  deletedAt: new Date(),
+                  updatedAt: new Date(),
+                })
+              );
+              await Promise.all(updatePromises);
+              console.log('모든 삭제된 할일 소프트 삭제 완료 (테스트)');
+              Alert.alert('테스트 완료', '모든 할일이 소프트 삭제로 변경되었습니다. (영구삭제 테스트)');
             } catch (error) {
-              console.error('전체 영구삭제 실패:', error);
-              Alert.alert('오류', '전체 영구삭제에 실패했습니다.');
+              console.error('전체 삭제 실패:', error);
+              Alert.alert('오류', '전체 삭제에 실패했습니다.');
             }
           },
         },
