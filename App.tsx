@@ -385,17 +385,41 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         >
           <Text style={styles.restoreButtonText}>복원</Text>
         </TouchableOpacity>
-        <Pressable
-          style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
-          onPress={() => {
-            console.log('영구삭제 버튼 클릭됨, ID:', item.id);
-            setTestMessage(`영구삭제 테스트: ${item.id}`);
-            // 3초 후 메시지 제거
-            setTimeout(() => setTestMessage(''), 3000);
-          }}
-        >
-          <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
-        </Pressable>
+        {typeof window !== 'undefined' ? (
+          <button
+            style={{
+              padding: '8px 12px',
+              borderRadius: '6px',
+              minWidth: '60px',
+              backgroundColor: theme.danger,
+              border: 'none',
+              color: '#ffffff',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => {
+              console.log('HTML 버튼 영구삭제 클릭됨, ID:', item.id);
+              window.alert(`HTML 버튼 테스트: ${item.id}`);
+            }}
+          >
+            영구삭제
+          </button>
+        ) : (
+          <Pressable
+            style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
+            onPress={() => {
+              console.log('영구삭제 버튼 클릭됨, ID:', item.id);
+              setTestMessage(`영구삭제 테스트: ${item.id}`);
+              setTimeout(() => setTestMessage(''), 3000);
+            }}
+          >
+            <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   ), [theme, restoreTask, permanentlyDeleteTask]);
@@ -540,19 +564,43 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           <>
             {deletedTasks.length > 0 && (
               <View style={styles.permanentlyDeleteAllContainer}>
-                                <Pressable
-                  style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
-                  onPress={() => {
-                    console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                    setTestMessage(`전체 영구삭제 테스트: ${deletedTasks.length}개`);
-                    // 3초 후 메시지 제거
-                    setTimeout(() => setTestMessage(''), 3000);
-                  }}
-                >
+                                                {typeof window !== 'undefined' ? (
+                  <button
+                    style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      backgroundColor: theme.danger,
+                      border: 'none',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onClick={() => {
+                      console.log('HTML 전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
+                      window.alert(`HTML 전체 영구삭제 테스트: ${deletedTasks.length}개`);
+                    }}
+                  >
+                    모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
+                  </button>
+                ) : (
+                  <Pressable
+                    style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
+                    onPress={() => {
+                      console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
+                      setTestMessage(`전체 영구삭제 테스트: ${deletedTasks.length}개`);
+                      setTimeout(() => setTestMessage(''), 3000);
+                    }}
+                  >
                     <Text style={styles.permanentlyDeleteAllButtonText}>
                       모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
                     </Text>
                   </Pressable>
+                )}
               </View>
             )}
             <FlatList
