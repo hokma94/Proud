@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -192,7 +192,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   };
 
   // 개별 할일 영구삭제 함수
-  const permanentlyDeleteTask = async (id: string) => {
+  const permanentlyDeleteTask = useCallback(async (id: string) => {
     console.log('영구삭제 함수 호출됨, ID:', id);
     Alert.alert(
       '영구삭제 확인',
@@ -215,10 +215,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         },
       ]
     );
-  };
+  }, []);
 
   // 모든 삭제된 할일 영구삭제 함수
   const permanentlyDeleteAllDeletedTasks = async () => {
+    console.log('전체 영구삭제 함수 호출됨, 삭제된 할일 개수:', deletedTasks.length);
+    
     if (deletedTasks.length === 0) {
       Alert.alert('알림', '삭제된 할일이 없습니다.');
       return;
@@ -233,6 +235,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           text: '전체 삭제',
           style: 'destructive',
           onPress: async () => {
+            console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
             try {
               await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
               console.log('모든 삭제된 할일 영구삭제 완료');
@@ -527,7 +530,10 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
               <View style={styles.permanentlyDeleteAllContainer}>
                 <TouchableOpacity
                   style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
-                  onPress={permanentlyDeleteAllDeletedTasks}
+                  onPress={() => {
+                    console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
+                    permanentlyDeleteAllDeletedTasks();
+                  }}
                   activeOpacity={0.8}
                 >
                   <Text style={styles.permanentlyDeleteAllButtonText}>

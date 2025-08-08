@@ -98,22 +98,27 @@ export const firestoreHelpers = {
 
   // 모든 삭제된 할일 영구삭제
   permanentlyDeleteAllDeletedTasks: async () => {
+    console.log('firebase.js: 전체 영구삭제 시작');
     try {
       const q = query(tasksCollection, orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
+      console.log('firebase.js: 전체 문서 조회 완료, 총 문서 수:', snapshot.size);
       
       const deletePromises = [];
+      let deletedCount = 0;
       snapshot.forEach((doc) => {
         const data = doc.data();
         if (data.isDeleted) {
           deletePromises.push(deleteDoc(doc.ref));
+          deletedCount++;
         }
       });
       
+      console.log('firebase.js: 삭제할 문서 수:', deletedCount);
       await Promise.all(deletePromises);
-      console.log('모든 삭제된 할일 영구삭제 완료');
+      console.log('firebase.js: 모든 삭제된 할일 영구삭제 완료');
     } catch (error) {
-      console.error('삭제된 할일 영구삭제 실패:', error);
+      console.error('firebase.js: 삭제된 할일 영구삭제 실패:', error);
       throw error;
     }
   },
