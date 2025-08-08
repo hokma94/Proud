@@ -215,7 +215,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         },
       ]
     );
-  }, []);
+  }, [firestoreHelpers]);
 
   // 모든 삭제된 할일 영구삭제 함수
   const permanentlyDeleteAllDeletedTasks = useCallback(async () => {
@@ -322,7 +322,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   };
 
   // 삭제된 할일 항목 렌더링 함수
-  const renderDeletedTask = ({ item }: { item: Task }) => (
+  const renderDeletedTask = useCallback(({ item }: { item: Task }) => (
     <View
       style={[
         styles.taskItem,
@@ -395,7 +395,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         </TouchableOpacity>
       </View>
     </View>
-  );
+  ), [theme, restoreTask, permanentlyDeleteTask]);
 
   if (isLoading) {
     return (
