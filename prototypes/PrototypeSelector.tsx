@@ -31,18 +31,18 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
       color: '#667eea',
     },
     {
-      id: 'arts-culture',
-      title: 'Arts&Culture',
-      description: '예술과 문화를 탐험하는 앱 (준비 중)',
-      icon: '🎨',
-      color: '#10b981',
-    },
-    {
       id: '3d-gallery',
       title: '3D Gallery',
       description: '3D 갤러리 및 전시 공간 (실행 가능)',
       icon: '🏛️',
       color: '#f59e0b',
+    },
+    {
+      id: 'arts-culture',
+      title: 'Arts&Culture',
+      description: '예술과 문화를 탐험하는 앱 (준비 중)',
+      icon: '🎨',
+      color: '#10b981',
     },
     {
       id: 'feed-view',
