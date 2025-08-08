@@ -403,11 +403,26 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
           onPress={() => {
             console.log('영구삭제 버튼 클릭됨, ID:', item.id);
-            // 간단한 테스트: 바로 알림 표시
-            if (typeof window !== 'undefined') {
-              window.alert(`버튼 클릭됨: ${item.id}`);
-            } else {
-              Alert.alert('테스트', `버튼 클릭됨: ${item.id}`);
+            // 간단한 테스트: DOM 요소 직접 조작
+            if (typeof document !== 'undefined') {
+              const testDiv = document.createElement('div');
+              testDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: red;
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                z-index: 9999;
+                font-size: 16px;
+              `;
+              testDiv.textContent = `버튼 클릭됨: ${item.id}`;
+              document.body.appendChild(testDiv);
+              setTimeout(() => {
+                document.body.removeChild(testDiv);
+              }, 3000);
             }
           }}
           activeOpacity={0.8}
@@ -553,11 +568,26 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
                   style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
                   onPress={() => {
                     console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                    // 간단한 테스트: 바로 알림 표시
-                    if (typeof window !== 'undefined') {
-                      window.alert(`전체 삭제 버튼 클릭됨: ${deletedTasks.length}개`);
-                    } else {
-                      Alert.alert('테스트', `전체 삭제 버튼 클릭됨: ${deletedTasks.length}개`);
+                    // 간단한 테스트: DOM 요소 직접 조작
+                    if (typeof document !== 'undefined') {
+                      const testDiv = document.createElement('div');
+                      testDiv.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: blue;
+                        color: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        z-index: 9999;
+                        font-size: 16px;
+                      `;
+                      testDiv.textContent = `전체 삭제 버튼 클릭됨: ${deletedTasks.length}개`;
+                      document.body.appendChild(testDiv);
+                      setTimeout(() => {
+                        document.body.removeChild(testDiv);
+                      }, 3000);
                     }
                   }}
                   activeOpacity={0.8}
