@@ -477,30 +477,42 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           </View>
         )}
 
-        {/* 기본 테스트 버튼 */}
+        {/* DOM 직접 조작 테스트 */}
         <View style={styles.testMessageContainer}>
-          <button
+          <div
             style={{
               padding: '10px 20px',
-              backgroundColor: '#007bff',
+              backgroundColor: '#28a745',
               color: 'white',
               border: 'none',
               borderRadius: '5px',
               cursor: 'pointer',
               fontSize: '16px',
+              textAlign: 'center',
+              userSelect: 'none',
             }}
-            onClick={() => {
-              console.log('기본 테스트 버튼 클릭됨');
-              alert('기본 테스트 버튼이 작동합니다!');
+            onMouseDown={() => {
+              console.log('DOM 직접 조작 테스트 - 마우스 다운');
+              document.body.style.backgroundColor = 'red';
+              setTimeout(() => {
+                document.body.style.backgroundColor = '';
+              }, 1000);
+            }}
+            onMouseUp={() => {
+              console.log('DOM 직접 조작 테스트 - 마우스 업');
+              document.body.style.backgroundColor = 'blue';
+              setTimeout(() => {
+                document.body.style.backgroundColor = '';
+              }, 1000);
             }}
           >
-            기본 테스트 버튼
-          </button>
+            DOM 직접 조작 테스트 (마우스 다운/업)
+          </div>
         </View>
 
-        {/* 실제 영구삭제 기능 테스트 */}
+        {/* 실제 영구삭제 기능 - DOM 직접 조작 */}
         <View style={styles.testMessageContainer}>
-          <button
+          <div
             style={{
               padding: '10px 20px',
               backgroundColor: '#dc3545',
@@ -510,23 +522,30 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
               cursor: 'pointer',
               fontSize: '16px',
               marginTop: '10px',
+              textAlign: 'center',
+              userSelect: 'none',
             }}
-            onClick={async () => {
-              console.log('실제 영구삭제 테스트 시작');
+            onMouseDown={async () => {
+              console.log('실제 영구삭제 DOM 테스트 시작');
               try {
-                // Firebase 함수 직접 호출 테스트
                 const testId = 'test-id-123';
                 await firestoreHelpers.permanentlyDeleteTask(testId);
                 console.log('Firebase 함수 호출 성공');
-                alert('Firebase 함수가 정상 작동합니다!');
+                document.body.style.backgroundColor = 'green';
+                setTimeout(() => {
+                  document.body.style.backgroundColor = '';
+                }, 2000);
               } catch (error) {
                 console.error('Firebase 함수 호출 실패:', error);
-                alert(`Firebase 함수 오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
+                document.body.style.backgroundColor = 'orange';
+                setTimeout(() => {
+                  document.body.style.backgroundColor = '';
+                }, 2000);
               }
             }}
           >
-            Firebase 영구삭제 테스트
-          </button>
+            Firebase 영구삭제 DOM 테스트 (마우스 다운)
+          </div>
         </View>
 
         {/* 입력 영역 */}
