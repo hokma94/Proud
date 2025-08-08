@@ -387,7 +387,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
           onPress={() => {
             console.log('영구삭제 버튼 클릭됨, ID:', item.id);
-            permanentlyDeleteTask(item.id);
+            // 간단한 테스트: Alert 대신 window.alert 사용
+            if (typeof window !== 'undefined') {
+              window.alert(`영구삭제 테스트: ${item.id}`);
+            } else {
+              Alert.alert('테스트', `영구삭제 테스트: ${item.id}`);
+            }
           }}
           activeOpacity={0.8}
         >
@@ -532,7 +537,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
                   style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
                   onPress={() => {
                     console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                    permanentlyDeleteAllDeletedTasks();
+                    // 간단한 테스트: Alert 대신 window.alert 사용
+                    if (typeof window !== 'undefined') {
+                      window.alert(`전체 영구삭제 테스트: ${deletedTasks.length}개`);
+                    } else {
+                      Alert.alert('테스트', `전체 영구삭제 테스트: ${deletedTasks.length}개`);
+                    }
                   }}
                   activeOpacity={0.8}
                 >
