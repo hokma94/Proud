@@ -96,6 +96,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   const [inputText, setInputText] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [testMessage, setTestMessage] = useState('');
 
   // Firestore 실시간 리스너 설정
   useEffect(() => {
@@ -388,12 +389,9 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
           onPress={() => {
             console.log('영구삭제 버튼 클릭됨, ID:', item.id);
-            // 간단한 테스트: Alert 대신 window.alert 사용
-            if (typeof window !== 'undefined') {
-              window.alert(`영구삭제 테스트: ${item.id}`);
-            } else {
-              Alert.alert('테스트', `영구삭제 테스트: ${item.id}`);
-            }
+            setTestMessage(`영구삭제 테스트: ${item.id}`);
+            // 3초 후 메시지 제거
+            setTimeout(() => setTestMessage(''), 3000);
           }}
         >
           <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
@@ -445,6 +443,15 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
             {activeTasks.length}개의 할일
           </Text>
         </View>
+
+        {/* 테스트 메시지 */}
+        {testMessage && (
+          <View style={[styles.testMessageContainer, { backgroundColor: theme.success }]}>
+            <Text style={[styles.testMessageText, { color: '#ffffff' }]}>
+              {testMessage}
+            </Text>
+          </View>
+        )}
 
         {/* 입력 영역 */}
         <View style={[styles.inputContainer, { backgroundColor: theme.surface }]}>
@@ -533,18 +540,15 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           <>
             {deletedTasks.length > 0 && (
               <View style={styles.permanentlyDeleteAllContainer}>
-                <Pressable
+                                <Pressable
                   style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
                   onPress={() => {
                     console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                    // 간단한 테스트: Alert 대신 window.alert 사용
-                    if (typeof window !== 'undefined') {
-                      window.alert(`전체 영구삭제 테스트: ${deletedTasks.length}개`);
-                    } else {
-                      Alert.alert('테스트', `전체 영구삭제 테스트: ${deletedTasks.length}개`);
-                    }
+                    setTestMessage(`전체 영구삭제 테스트: ${deletedTasks.length}개`);
+                    // 3초 후 메시지 제거
+                    setTimeout(() => setTestMessage(''), 3000);
                   }}
-                                  >
+                >
                     <Text style={styles.permanentlyDeleteAllButtonText}>
                       모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
                     </Text>
@@ -897,5 +901,19 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  testMessageContainer: {
+    marginHorizontal: 20,
+    marginVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  testMessageText: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
