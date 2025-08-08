@@ -197,19 +197,17 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   const permanentlyDeleteTask = useCallback(async (id: string) => {
     console.log('영구삭제 함수 호출됨, ID:', id);
     
-    // 웹 환경에서는 window.confirm 사용
+    // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
-      const confirmed = window.confirm('이 할일을 영구적으로 삭제하시겠습니까? 복원할 수 없습니다.');
-      if (confirmed) {
-        console.log('영구삭제 확인됨, ID:', id);
-        try {
-          await firestoreHelpers.permanentlyDeleteTask(id);
-          console.log('할일 영구삭제 완료, ID:', id);
-          window.alert('할일이 영구삭제되었습니다.');
-        } catch (error) {
-          console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
-          window.alert('할일 영구삭제에 실패했습니다.');
-        }
+      console.log('영구삭제 확인됨, ID:', id);
+      try {
+        await firestoreHelpers.permanentlyDeleteTask(id);
+        console.log('할일 영구삭제 완료, ID:', id);
+        // window.alert 대신 콘솔에 메시지 출력
+        console.log('✅ 할일이 영구삭제되었습니다.');
+      } catch (error) {
+        console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
+        console.log('❌ 할일 영구삭제에 실패했습니다.');
       }
     } else {
       // 모바일 환경에서는 Alert.alert 사용
@@ -250,19 +248,17 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
       return;
     }
 
-    // 웹 환경에서는 window.confirm 사용
+    // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
-      const confirmed = window.confirm(`삭제된 할일 ${deletedTasks.length}개를 모두 영구적으로 삭제하시겠습니까?\n복원할 수 없습니다.`);
-      if (confirmed) {
-        console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
-        try {
-          await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
-          console.log('모든 삭제된 할일 영구삭제 완료');
-          window.alert('모든 삭제된 할일이 영구삭제되었습니다.');
-        } catch (error) {
-          console.error('전체 영구삭제 실패:', error);
-          window.alert('전체 영구삭제에 실패했습니다.');
-        }
+      console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
+      try {
+        await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+        console.log('모든 삭제된 할일 영구삭제 완료');
+        // window.alert 대신 콘솔에 메시지 출력
+        console.log('✅ 모든 삭제된 할일이 영구삭제되었습니다.');
+      } catch (error) {
+        console.error('전체 영구삭제 실패:', error);
+        console.log('❌ 전체 영구삭제에 실패했습니다.');
       }
     } else {
       // 모바일 환경에서는 Alert.alert 사용
