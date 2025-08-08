@@ -196,6 +196,8 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   // 개별 할일 영구삭제 함수
   const permanentlyDeleteTask = useCallback(async (id: string) => {
     console.log('영구삭제 함수 호출됨, ID:', id);
+    console.log('=== 디버깅 시작 ===');
+    console.log('현재 시간:', new Date().toISOString());
     
     // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
@@ -242,6 +244,8 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   // 모든 삭제된 할일 영구삭제 함수
   const permanentlyDeleteAllDeletedTasks = useCallback(async () => {
     console.log('전체 영구삭제 함수 호출됨, 삭제된 할일 개수:', deletedTasks.length);
+    console.log('=== 전체 삭제 디버깅 시작 ===');
+    console.log('현재 시간:', new Date().toISOString());
     
     if (deletedTasks.length === 0) {
       if (typeof window !== 'undefined') {
