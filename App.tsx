@@ -193,6 +193,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
 
   // 개별 할일 영구삭제 함수
   const permanentlyDeleteTask = async (id: string) => {
+    console.log('영구삭제 함수 호출됨, ID:', id);
     Alert.alert(
       '영구삭제 확인',
       '이 할일을 영구적으로 삭제하시겠습니까? 복원할 수 없습니다.',
@@ -202,11 +203,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           text: '삭제',
           style: 'destructive',
           onPress: async () => {
+            console.log('영구삭제 확인됨, ID:', id);
             try {
               await firestoreHelpers.permanentlyDeleteTask(id);
-              console.log('할일 영구삭제 완료');
+              console.log('할일 영구삭제 완료, ID:', id);
             } catch (error) {
-              console.error('할일 영구삭제 실패:', error);
+              console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
               Alert.alert('오류', '할일 영구삭제에 실패했습니다.');
             }
           },
@@ -380,7 +382,10 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
-          onPress={() => permanentlyDeleteTask(item.id)}
+          onPress={() => {
+            console.log('영구삭제 버튼 클릭됨, ID:', item.id);
+            permanentlyDeleteTask(item.id);
+          }}
           activeOpacity={0.8}
         >
           <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>

@@ -84,11 +84,14 @@ export const firestoreHelpers = {
 
   // 할일 영구삭제
   permanentlyDeleteTask: async (taskId) => {
+    console.log('firebase.js: 영구삭제 시작, taskId:', taskId);
     try {
       const taskRef = doc(db, 'tasks', taskId);
+      console.log('firebase.js: 문서 참조 생성됨:', taskRef);
       await deleteDoc(taskRef);
+      console.log('firebase.js: 영구삭제 완료, taskId:', taskId);
     } catch (error) {
-      console.error('할일 영구삭제 실패:', error);
+      console.error('firebase.js: 할일 영구삭제 실패, taskId:', taskId, 'Error:', error);
       throw error;
     }
   },
