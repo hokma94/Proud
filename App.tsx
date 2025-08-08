@@ -218,7 +218,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   }, []);
 
   // 모든 삭제된 할일 영구삭제 함수
-  const permanentlyDeleteAllDeletedTasks = async () => {
+  const permanentlyDeleteAllDeletedTasks = useCallback(async () => {
     console.log('전체 영구삭제 함수 호출됨, 삭제된 할일 개수:', deletedTasks.length);
     
     if (deletedTasks.length === 0) {
@@ -248,7 +248,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         },
       ]
     );
-  };
+  }, [deletedTasks.length]);
 
   // 할일 항목 렌더링 함수
   const renderTask = ({ item }: { item: Task }) => {
