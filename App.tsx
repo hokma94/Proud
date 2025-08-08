@@ -200,8 +200,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
     // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
       console.log('영구삭제 확인됨, ID:', id);
+      console.log('firestoreHelpers 객체 확인:', firestoreHelpers);
+      console.log('permanentlyDeleteTask 함수 확인:', firestoreHelpers.permanentlyDeleteTask);
       try {
-        await firestoreHelpers.permanentlyDeleteTask(id);
+        console.log('Firebase 함수 호출 시작...');
+        const result = await firestoreHelpers.permanentlyDeleteTask(id);
+        console.log('Firebase 함수 호출 완료, 결과:', result);
         console.log('할일 영구삭제 완료, ID:', id);
         // window.alert 대신 콘솔에 메시지 출력
         console.log('✅ 할일이 영구삭제되었습니다.');
@@ -251,8 +255,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
     // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
       console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
+      console.log('firestoreHelpers 객체 확인:', firestoreHelpers);
+      console.log('permanentlyDeleteAllDeletedTasks 함수 확인:', firestoreHelpers.permanentlyDeleteAllDeletedTasks);
       try {
-        await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+        console.log('Firebase 전체 삭제 함수 호출 시작...');
+        const result = await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+        console.log('Firebase 전체 삭제 함수 호출 완료, 결과:', result);
         console.log('모든 삭제된 할일 영구삭제 완료');
         // window.alert 대신 콘솔에 메시지 출력
         console.log('✅ 모든 삭제된 할일이 영구삭제되었습니다.');
