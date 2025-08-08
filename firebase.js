@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, getDocs } from 'firebase/firestore';
 
 // Firebase 설정
 const firebaseConfig = {
@@ -78,6 +78,39 @@ export const firestoreHelpers = {
       });
     } catch (error) {
       console.error('할일 복원 실패:', error);
+      throw error;
+    }
+  },
+
+  // 할일 영구삭제
+  permanentlyDeleteTask: async (taskId) => {
+    try {
+      const taskRef = doc(db, 'tasks', taskId);
+      await deleteDoc(taskRef);
+    } catch (error) {
+      console.error('할일 영구삭제 실패:', error);
+      throw error;
+    }
+  },
+
+  // 모든 삭제된 할일 영구삭제
+  permanentlyDeleteAllDeletedTasks: async () => {
+    try {
+      const q = query(tasksCollection, orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      
+      const deletePromises = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.isDeleted) {
+          deletePromises.push(deleteDoc(doc.ref));
+        }
+      });
+      
+      await Promise.all(deletePromises);
+      console.log('모든 삭제된 할일 영구삭제 완료');
+    } catch (error) {
+      console.error('삭제된 할일 영구삭제 실패:', error);
       throw error;
     }
   },

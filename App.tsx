@@ -19,6 +19,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { firestoreHelpers } from './firebase';
 import { Linking } from 'react-native';
+import PrototypeSelector from './prototypes/PrototypeSelector';
 
 // Android에서 LayoutAnimation 활성화
 if (Platform.OS === 'android') {
@@ -82,130 +83,7 @@ const formatDate = (date: Date) => {
   });
 };
 
-// 프로토타입 선택 화면
-const PrototypeSelector = ({ onSelectPrototype }: { onSelectPrototype: (prototype: string) => void }) => {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const theme = colors[isDark ? 'dark' : 'light'];
-
-  const prototypes = [
-    {
-      id: 'todo',
-      title: 'My Tasks',
-      description: '할일 관리 앱 (Firebase 실시간 동기화)',
-      icon: '📝',
-      color: '#667eea',
-    },
-    {
-      id: '3d-gallery',
-      title: '3D Gallery',
-      description: '3D 갤러리 및 전시 공간 (실행 가능)',
-      icon: '🏛️',
-      color: '#f59e0b',
-    },
-    {
-      id: 'feed-view',
-      title: 'Feed View',
-      description: '소셜 피드 및 콘텐츠 뷰어 (준비 중)',
-      icon: '📱',
-      color: '#ef4444',
-    },
-    {
-      id: 'grim-store',
-      title: 'Grim Store',
-      description: '그림을 사고 팔 수 있는 앱 (준비 중)',
-      icon: '🛒',
-      color: '#8b5cf6',
-    },
-    {
-      id: 'arts-culture',
-      title: 'Arts&Culture',
-      description: '예술과 문화를 탐험하는 앱 (준비 중)',
-      icon: '🎨',
-      color: '#10b981',
-    },
-    {
-      id: 'mini-games',
-      title: 'Mini Games',
-      description: '미니 게임 컬렉션 (준비 중)',
-      icon: '🎮',
-      color: '#06b6d4',
-    },
-    {
-      id: 'event-1',
-      title: 'Event #1',
-      description: '특별 이벤트 및 프로모션 (준비 중)',
-      icon: '🎉',
-      color: '#ec4899',
-    },
-  ];
-
-  return (
-    <LinearGradient
-      colors={[theme.primary, theme.secondary]}
-      style={styles.gradientContainer}
-    >
-      <SafeAreaView style={styles.container}>
-        <StatusBar 
-          barStyle={isDark ? 'light-content' : 'dark-content'} 
-          backgroundColor="transparent"
-          translucent
-        />
-        
-        {/* 상단 제목 */}
-        <View style={[styles.header, { backgroundColor: 'transparent' }]}>
-          <Text style={[styles.title, { color: '#ffffff' }]}>Prototype Hub</Text>
-          <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
-            다양한 프로토타입을 테스트해보세요
-          </Text>
-        </View>
-
-        {/* 프로토타입 목록 */}
-        <ScrollView style={styles.prototypeList} showsVerticalScrollIndicator={false}>
-          {prototypes.map((prototype) => (
-            <TouchableOpacity
-              key={prototype.id}
-              style={[
-                styles.prototypeCard,
-                {
-                  backgroundColor: theme.surface,
-                  borderColor: theme.border,
-                  shadowColor: theme.shadow,
-                },
-              ]}
-              onPress={() => onSelectPrototype(prototype.id)}
-              activeOpacity={0.8}
-            >
-              <View style={styles.prototypeHeader}>
-                <Text style={styles.prototypeIcon}>{prototype.icon}</Text>
-                <View style={styles.prototypeInfo}>
-                  <Text style={[styles.prototypeTitle, { color: theme.text }]}>
-                    {prototype.title}
-                  </Text>
-                  <Text style={[styles.prototypeDescription, { color: theme.textSecondary }]}>
-                    {prototype.description}
-                  </Text>
-                </View>
-              </View>
-              <View style={[
-                styles.prototypeStatus, 
-                { 
-                  backgroundColor: (prototype.id === 'todo' || prototype.id === '3d-gallery') 
-                    ? '#fbbf24' // 노란색 (실행 가능)
-                    : '#9ca3af' // 회색 (준비 중)
-                }
-              ]}>
-                <Text style={styles.prototypeStatusText}>
-                  {prototype.id === 'todo' || prototype.id === '3d-gallery' ? '실행 가능' : '준비 중'}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
-  );
-};
+// 프로토타입 선택 화면은 외부 파일에서 import
 
 // My Tasks 앱 컴포넌트
 const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
@@ -311,6 +189,60 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
       console.error('할일 복원 실패:', error);
       Alert.alert('오류', '할일 복원에 실패했습니다.');
     }
+  };
+
+  // 개별 할일 영구삭제 함수
+  const permanentlyDeleteTask = async (id: string) => {
+    Alert.alert(
+      '영구삭제 확인',
+      '이 할일을 영구적으로 삭제하시겠습니까? 복원할 수 없습니다.',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await firestoreHelpers.permanentlyDeleteTask(id);
+              console.log('할일 영구삭제 완료');
+            } catch (error) {
+              console.error('할일 영구삭제 실패:', error);
+              Alert.alert('오류', '할일 영구삭제에 실패했습니다.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // 모든 삭제된 할일 영구삭제 함수
+  const permanentlyDeleteAllDeletedTasks = async () => {
+    if (deletedTasks.length === 0) {
+      Alert.alert('알림', '삭제된 할일이 없습니다.');
+      return;
+    }
+
+    Alert.alert(
+      '전체 영구삭제 확인',
+      `삭제된 할일 ${deletedTasks.length}개를 모두 영구적으로 삭제하시겠습니까?\n복원할 수 없습니다.`,
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '전체 삭제',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+              console.log('모든 삭제된 할일 영구삭제 완료');
+              Alert.alert('완료', '모든 삭제된 할일이 영구삭제되었습니다.');
+            } catch (error) {
+              console.error('전체 영구삭제 실패:', error);
+              Alert.alert('오류', '전체 영구삭제에 실패했습니다.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   // 할일 항목 렌더링 함수
@@ -438,13 +370,22 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           )}
         </View>
       </View>
-      <TouchableOpacity
-        style={[styles.restoreButton, { backgroundColor: theme.primary }]}
-        onPress={() => restoreTask(item.id)}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.restoreButtonText}>복원</Text>
-      </TouchableOpacity>
+      <View style={styles.deletedTaskButtons}>
+        <TouchableOpacity
+          style={[styles.restoreButton, { backgroundColor: theme.primary }]}
+          onPress={() => restoreTask(item.id)}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.restoreButtonText}>복원</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
+          onPress={() => permanentlyDeleteTask(item.id)}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -576,20 +517,35 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
             }
           />
         ) : (
-          <FlatList
-            data={deletedTasks}
-            renderItem={renderDeletedTask}
-            keyExtractor={(item) => item.id}
-            style={styles.list}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <View style={styles.emptyContainer}>
-                <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
-                  삭제된 할일이 없습니다.
-                </Text>
+          <>
+            {deletedTasks.length > 0 && (
+              <View style={styles.permanentlyDeleteAllContainer}>
+                <TouchableOpacity
+                  style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
+                  onPress={permanentlyDeleteAllDeletedTasks}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.permanentlyDeleteAllButtonText}>
+                    모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
+                  </Text>
+                </TouchableOpacity>
               </View>
-            }
-          />
+            )}
+            <FlatList
+              data={deletedTasks}
+              renderItem={renderDeletedTask}
+              keyExtractor={(item) => item.id}
+              style={styles.list}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
+                    삭제된 할일이 없습니다.
+                  </Text>
+                </View>
+              }
+            />
+          </>
         )}
       </SafeAreaView>
     </LinearGradient>
@@ -710,55 +666,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  prototypeList: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  prototypeCard: {
-    marginBottom: 16,
-    padding: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  prototypeHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  prototypeIcon: {
-    fontSize: 32,
-    marginRight: 16,
-  },
-  prototypeInfo: {
-    flex: 1,
-  },
-  prototypeTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  prototypeDescription: {
-    fontSize: 14,
-  },
-  prototypeStatus: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  prototypeStatusText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
+
   comingSoonContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -905,20 +813,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  deleteButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
+  deletedTaskButtons: {
+    flexDirection: 'row',
+    gap: 8,
   },
   restoreButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    minWidth: 60,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    minWidth: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
   restoreButtonText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  permanentlyDeleteButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    minWidth: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  permanentlyDeleteButtonText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  deleteButtonText: {
     color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
@@ -936,5 +861,21 @@ const styles = StyleSheet.create({
   },
   emptySubText: {
     fontSize: 14,
+  },
+  permanentlyDeleteAllContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  permanentlyDeleteAllButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  permanentlyDeleteAllButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
