@@ -196,27 +196,45 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   // 개별 할일 영구삭제 함수
   const permanentlyDeleteTask = useCallback(async (id: string) => {
     console.log('영구삭제 함수 호출됨, ID:', id);
-    Alert.alert(
-      '영구삭제 확인',
-      '이 할일을 영구적으로 삭제하시겠습니까? 복원할 수 없습니다.',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '삭제',
-          style: 'destructive',
-          onPress: async () => {
-            console.log('영구삭제 확인됨, ID:', id);
-            try {
-              await firestoreHelpers.permanentlyDeleteTask(id);
-              console.log('할일 영구삭제 완료, ID:', id);
-            } catch (error) {
-              console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
-              Alert.alert('오류', '할일 영구삭제에 실패했습니다.');
-            }
+    
+    // 웹 환경에서는 window.confirm 사용
+    if (typeof window !== 'undefined') {
+      const confirmed = window.confirm('이 할일을 영구적으로 삭제하시겠습니까? 복원할 수 없습니다.');
+      if (confirmed) {
+        console.log('영구삭제 확인됨, ID:', id);
+        try {
+          await firestoreHelpers.permanentlyDeleteTask(id);
+          console.log('할일 영구삭제 완료, ID:', id);
+          window.alert('할일이 영구삭제되었습니다.');
+        } catch (error) {
+          console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
+          window.alert('할일 영구삭제에 실패했습니다.');
+        }
+      }
+    } else {
+      // 모바일 환경에서는 Alert.alert 사용
+      Alert.alert(
+        '영구삭제 확인',
+        '이 할일을 영구적으로 삭제하시겠습니까? 복원할 수 없습니다.',
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '삭제',
+            style: 'destructive',
+            onPress: async () => {
+              console.log('영구삭제 확인됨, ID:', id);
+              try {
+                await firestoreHelpers.permanentlyDeleteTask(id);
+                console.log('할일 영구삭제 완료, ID:', id);
+              } catch (error) {
+                console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
+                Alert.alert('오류', '할일 영구삭제에 실패했습니다.');
+              }
+            },
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
   }, [firestoreHelpers]);
 
   // 모든 삭제된 할일 영구삭제 함수
@@ -224,33 +242,54 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
     console.log('전체 영구삭제 함수 호출됨, 삭제된 할일 개수:', deletedTasks.length);
     
     if (deletedTasks.length === 0) {
-      Alert.alert('알림', '삭제된 할일이 없습니다.');
+      if (typeof window !== 'undefined') {
+        window.alert('삭제된 할일이 없습니다.');
+      } else {
+        Alert.alert('알림', '삭제된 할일이 없습니다.');
+      }
       return;
     }
 
-    Alert.alert(
-      '전체 영구삭제 확인',
-      `삭제된 할일 ${deletedTasks.length}개를 모두 영구적으로 삭제하시겠습니까?\n복원할 수 없습니다.`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '전체 삭제',
-          style: 'destructive',
-          onPress: async () => {
-            console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
-            try {
-              await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
-              console.log('모든 삭제된 할일 영구삭제 완료');
-              Alert.alert('완료', '모든 삭제된 할일이 영구삭제되었습니다.');
-            } catch (error) {
-              console.error('전체 영구삭제 실패:', error);
-              Alert.alert('오류', '전체 영구삭제에 실패했습니다.');
-            }
+    // 웹 환경에서는 window.confirm 사용
+    if (typeof window !== 'undefined') {
+      const confirmed = window.confirm(`삭제된 할일 ${deletedTasks.length}개를 모두 영구적으로 삭제하시겠습니까?\n복원할 수 없습니다.`);
+      if (confirmed) {
+        console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
+        try {
+          await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+          console.log('모든 삭제된 할일 영구삭제 완료');
+          window.alert('모든 삭제된 할일이 영구삭제되었습니다.');
+        } catch (error) {
+          console.error('전체 영구삭제 실패:', error);
+          window.alert('전체 영구삭제에 실패했습니다.');
+        }
+      }
+    } else {
+      // 모바일 환경에서는 Alert.alert 사용
+      Alert.alert(
+        '전체 영구삭제 확인',
+        `삭제된 할일 ${deletedTasks.length}개를 모두 영구적으로 삭제하시겠습니까?\n복원할 수 없습니다.`,
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '전체 삭제',
+            style: 'destructive',
+            onPress: async () => {
+              console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
+              try {
+                await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+                console.log('모든 삭제된 할일 영구삭제 완료');
+                Alert.alert('완료', '모든 삭제된 할일이 영구삭제되었습니다.');
+              } catch (error) {
+                console.error('전체 영구삭제 실패:', error);
+                Alert.alert('오류', '전체 영구삭제에 실패했습니다.');
+              }
+            },
           },
-        },
-      ]
-    );
-  }, [deletedTasks.length]);
+        ]
+      );
+    }
+  }, [deletedTasks.length, firestoreHelpers]);
 
   // 할일 항목 렌더링 함수
   const renderTask = ({ item }: { item: Task }) => {
@@ -385,41 +424,16 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
         >
           <Text style={styles.restoreButtonText}>복원</Text>
         </TouchableOpacity>
-        {typeof window !== 'undefined' ? (
-          <button
-            style={{
-              padding: '8px 12px',
-              borderRadius: '6px',
-              minWidth: '60px',
-              backgroundColor: theme.danger,
-              border: 'none',
-              color: '#ffffff',
-              fontSize: '12px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onClick={() => {
-              console.log('HTML 버튼 영구삭제 클릭됨, ID:', item.id);
-              window.alert(`HTML 버튼 테스트: ${item.id}`);
-            }}
-          >
-            영구삭제
-          </button>
-        ) : (
-          <Pressable
-            style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
-            onPress={() => {
-              console.log('영구삭제 버튼 클릭됨, ID:', item.id);
-              setTestMessage(`영구삭제 테스트: ${item.id}`);
-              setTimeout(() => setTestMessage(''), 3000);
-            }}
-          >
-            <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
-          </Pressable>
-        )}
+        <TouchableOpacity
+          style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
+          onPress={() => {
+            console.log('영구삭제 버튼 클릭됨, ID:', item.id);
+            permanentlyDeleteTask(item.id);
+          }}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.permanentlyDeleteButtonText}>영구삭제</Text>
+        </TouchableOpacity>
       </View>
     </View>
   ), [theme, restoreTask, permanentlyDeleteTask]);
@@ -477,76 +491,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           </View>
         )}
 
-        {/* DOM 직접 조작 테스트 */}
-        <View style={styles.testMessageContainer}>
-          <div
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '16px',
-              textAlign: 'center',
-              userSelect: 'none',
-            }}
-            onMouseDown={() => {
-              console.log('DOM 직접 조작 테스트 - 마우스 다운');
-              document.body.style.backgroundColor = 'red';
-              setTimeout(() => {
-                document.body.style.backgroundColor = '';
-              }, 1000);
-            }}
-            onMouseUp={() => {
-              console.log('DOM 직접 조작 테스트 - 마우스 업');
-              document.body.style.backgroundColor = 'blue';
-              setTimeout(() => {
-                document.body.style.backgroundColor = '';
-              }, 1000);
-            }}
-          >
-            DOM 직접 조작 테스트 (마우스 다운/업)
-          </div>
-        </View>
 
-        {/* 실제 영구삭제 기능 - DOM 직접 조작 */}
-        <View style={styles.testMessageContainer}>
-          <div
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '16px',
-              marginTop: '10px',
-              textAlign: 'center',
-              userSelect: 'none',
-            }}
-            onMouseDown={async () => {
-              console.log('실제 영구삭제 DOM 테스트 시작');
-              try {
-                const testId = 'test-id-123';
-                await firestoreHelpers.permanentlyDeleteTask(testId);
-                console.log('Firebase 함수 호출 성공');
-                document.body.style.backgroundColor = 'green';
-                setTimeout(() => {
-                  document.body.style.backgroundColor = '';
-                }, 2000);
-              } catch (error) {
-                console.error('Firebase 함수 호출 실패:', error);
-                document.body.style.backgroundColor = 'orange';
-                setTimeout(() => {
-                  document.body.style.backgroundColor = '';
-                }, 2000);
-              }
-            }}
-          >
-            Firebase 영구삭제 DOM 테스트 (마우스 다운)
-          </div>
-        </View>
 
         {/* 입력 영역 */}
         <View style={[styles.inputContainer, { backgroundColor: theme.surface }]}>
@@ -635,43 +580,18 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           <>
             {deletedTasks.length > 0 && (
               <View style={styles.permanentlyDeleteAllContainer}>
-                                                {typeof window !== 'undefined' ? (
-                  <button
-                    style={{
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      backgroundColor: theme.danger,
-                      border: 'none',
-                      color: '#ffffff',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onClick={() => {
-                      console.log('HTML 전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                      window.alert(`HTML 전체 영구삭제 테스트: ${deletedTasks.length}개`);
-                    }}
-                  >
+                                                <TouchableOpacity
+                  style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
+                  onPress={() => {
+                    console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
+                    permanentlyDeleteAllDeletedTasks();
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.permanentlyDeleteAllButtonText}>
                     모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
-                  </button>
-                ) : (
-                  <Pressable
-                    style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
-                    onPress={() => {
-                      console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                      setTestMessage(`전체 영구삭제 테스트: ${deletedTasks.length}개`);
-                      setTimeout(() => setTestMessage(''), 3000);
-                    }}
-                  >
-                    <Text style={styles.permanentlyDeleteAllButtonText}>
-                      모든 삭제된 할일 영구삭제 ({deletedTasks.length}개)
-                    </Text>
-                  </Pressable>
-                )}
+                  </Text>
+                </TouchableOpacity>
               </View>
             )}
             <FlatList
