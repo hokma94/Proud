@@ -198,6 +198,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
     console.log('영구삭제 함수 호출됨, ID:', id);
     console.log('=== 디버깅 시작 ===');
     console.log('현재 시간:', new Date().toISOString());
+    console.log('TEST: 이 메시지가 보이면 새로운 코드가 실행됩니다!');
     
     // 웹 환경에서는 바로 실행 (확인 대화상자 우회)
     if (typeof window !== 'undefined') {
@@ -246,6 +247,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
     console.log('전체 영구삭제 함수 호출됨, 삭제된 할일 개수:', deletedTasks.length);
     console.log('=== 전체 삭제 디버깅 시작 ===');
     console.log('현재 시간:', new Date().toISOString());
+    console.log('TEST: 전체 삭제 - 이 메시지가 보이면 새로운 코드가 실행됩니다!');
     
     if (deletedTasks.length === 0) {
       if (typeof window !== 'undefined') {
