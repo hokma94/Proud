@@ -498,6 +498,37 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           </button>
         </View>
 
+        {/* 실제 영구삭제 기능 테스트 */}
+        <View style={styles.testMessageContainer}>
+          <button
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              marginTop: '10px',
+            }}
+            onClick={async () => {
+              console.log('실제 영구삭제 테스트 시작');
+              try {
+                // Firebase 함수 직접 호출 테스트
+                const testId = 'test-id-123';
+                await firestoreHelpers.permanentlyDeleteTask(testId);
+                console.log('Firebase 함수 호출 성공');
+                alert('Firebase 함수가 정상 작동합니다!');
+              } catch (error) {
+                console.error('Firebase 함수 호출 실패:', error);
+                alert(`Firebase 함수 오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
+              }
+            }}
+          >
+            Firebase 영구삭제 테스트
+          </button>
+        </View>
+
         {/* 입력 영역 */}
         <View style={[styles.inputContainer, { backgroundColor: theme.surface }]}>
           <TextInput
