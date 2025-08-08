@@ -205,18 +205,11 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           onPress: async () => {
             console.log('영구삭제 확인됨, ID:', id);
             try {
-              // 테스트: 영구삭제 대신 소프트 삭제로 변경
-              console.log('테스트: 영구삭제 대신 소프트 삭제로 변경');
-              await firestoreHelpers.updateTask(id, {
-                isDeleted: true,
-                deletedAt: new Date(),
-                updatedAt: new Date(),
-              });
-              console.log('할일 소프트 삭제 완료 (테스트), ID:', id);
-              Alert.alert('테스트 완료', '소프트 삭제로 변경되었습니다. (영구삭제 테스트)');
+              await firestoreHelpers.permanentlyDeleteTask(id);
+              console.log('할일 영구삭제 완료, ID:', id);
             } catch (error) {
-              console.error('할일 삭제 실패, ID:', id, 'Error:', error);
-              Alert.alert('오류', '할일 삭제에 실패했습니다.');
+              console.error('할일 영구삭제 실패, ID:', id, 'Error:', error);
+              Alert.alert('오류', '할일 영구삭제에 실패했습니다.');
             }
           },
         },
@@ -244,21 +237,12 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           onPress: async () => {
             console.log('전체 영구삭제 확인됨, 삭제된 할일 개수:', deletedTasks.length);
             try {
-              // 테스트: 전체 영구삭제 대신 개별 업데이트로 변경
-              console.log('테스트: 전체 영구삭제 대신 개별 업데이트로 변경');
-              const updatePromises = deletedTasks.map(task => 
-                firestoreHelpers.updateTask(task.id, {
-                  isDeleted: true,
-                  deletedAt: new Date(),
-                  updatedAt: new Date(),
-                })
-              );
-              await Promise.all(updatePromises);
-              console.log('모든 삭제된 할일 소프트 삭제 완료 (테스트)');
-              Alert.alert('테스트 완료', '모든 할일이 소프트 삭제로 변경되었습니다. (영구삭제 테스트)');
+              await firestoreHelpers.permanentlyDeleteAllDeletedTasks();
+              console.log('모든 삭제된 할일 영구삭제 완료');
+              Alert.alert('완료', '모든 삭제된 할일이 영구삭제되었습니다.');
             } catch (error) {
-              console.error('전체 삭제 실패:', error);
-              Alert.alert('오류', '전체 삭제에 실패했습니다.');
+              console.error('전체 영구삭제 실패:', error);
+              Alert.alert('오류', '전체 영구삭제에 실패했습니다.');
             }
           },
         },
@@ -403,27 +387,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           style={[styles.permanentlyDeleteButton, { backgroundColor: theme.danger }]}
           onPress={() => {
             console.log('영구삭제 버튼 클릭됨, ID:', item.id);
-            // 간단한 테스트: DOM 요소 직접 조작
-            if (typeof document !== 'undefined') {
-              const testDiv = document.createElement('div');
-              testDiv.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: red;
-                color: white;
-                padding: 20px;
-                border-radius: 10px;
-                z-index: 9999;
-                font-size: 16px;
-              `;
-              testDiv.textContent = `버튼 클릭됨: ${item.id}`;
-              document.body.appendChild(testDiv);
-              setTimeout(() => {
-                document.body.removeChild(testDiv);
-              }, 3000);
-            }
+            permanentlyDeleteTask(item.id);
           }}
           activeOpacity={0.8}
         >
@@ -568,27 +532,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
                   style={[styles.permanentlyDeleteAllButton, { backgroundColor: theme.danger }]}
                   onPress={() => {
                     console.log('전체 영구삭제 버튼 클릭됨, 삭제된 할일 개수:', deletedTasks.length);
-                    // 간단한 테스트: DOM 요소 직접 조작
-                    if (typeof document !== 'undefined') {
-                      const testDiv = document.createElement('div');
-                      testDiv.style.cssText = `
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        background: blue;
-                        color: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        z-index: 9999;
-                        font-size: 16px;
-                      `;
-                      testDiv.textContent = `전체 삭제 버튼 클릭됨: ${deletedTasks.length}개`;
-                      document.body.appendChild(testDiv);
-                      setTimeout(() => {
-                        document.body.removeChild(testDiv);
-                      }, 3000);
-                    }
+                    permanentlyDeleteAllDeletedTasks();
                   }}
                   activeOpacity={0.8}
                 >
