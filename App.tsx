@@ -477,6 +477,27 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           </View>
         )}
 
+        {/* 기본 테스트 버튼 */}
+        <View style={styles.testMessageContainer}>
+          <button
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+            }}
+            onClick={() => {
+              console.log('기본 테스트 버튼 클릭됨');
+              alert('기본 테스트 버튼이 작동합니다!');
+            }}
+          >
+            기본 테스트 버튼
+          </button>
+        </View>
+
         {/* 입력 영역 */}
         <View style={[styles.inputContainer, { backgroundColor: theme.surface }]}>
           <TextInput
