@@ -1072,8 +1072,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   header: {
-    paddingTop: 60,
-    paddingBottom: 30,
+    paddingTop: 40, // 모바일에서 상단 마진 축소 (60 → 40)
+    paddingBottom: 20, // 하단 마진도 축소 (30 → 20)
     paddingHorizontal: 20,
     alignItems: 'center',
   },
@@ -1092,14 +1092,14 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: 'center',
-    marginLeft: 60, // 뒤로가기 버튼 너비만큼 여백
-    marginRight: 60, // 오른쪽도 동일한 여백
-    minHeight: 80, // 최소 높이 보장
+    marginLeft: 50, // 좌우 여백 축소 (60 → 50)
+    marginRight: 50, // 좌우 여백 축소 (60 → 50)
+    minHeight: 60, // 최소 높이 축소 (80 → 60) - 상단 마진 축소에 맞춤
     justifyContent: 'center', // 세로 중앙 정렬
   },
   backButton: {
     position: 'absolute',
-    top: 60,
+    top: 40, // 뒤로 버튼을 위로 올림 (60 → 40)
     left: 20,
     zIndex: 1,
   },
