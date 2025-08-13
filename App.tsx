@@ -98,7 +98,8 @@ const NoteEditor = ({ note, onBack, onSave }: {
   const theme = colors[isDark ? 'dark' : 'light'];
   
   const [content, setContent] = useState(note?.content || '');
-  const [isEditing, setIsEditing] = useState(false); // 기본값을 보기 모드로 변경
+  // 새 Note인지 기존 Note인지에 따라 기본 모드 설정
+  const [isEditing, setIsEditing] = useState(!note?.content || note.content.trim() === '');
 
   // 내용 변경 시 자동 저장
   const handleContentChange = (text: string) => {
