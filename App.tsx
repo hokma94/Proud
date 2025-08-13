@@ -211,6 +211,20 @@ const NoteEditor = ({ note, onBack, onSave, onDelete }: {
             <ScrollView style={styles.markdownViewer}>
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
+                components={{
+                  // 제목 스타일
+                  h1: ({children}) => <Text style={[styles.markdownH1, {color: theme.text}]}>{children}</Text>,
+                  h2: ({children}) => <Text style={[styles.markdownH2, {color: theme.text}]}>{children}</Text>,
+                  h3: ({children}) => <Text style={[styles.markdownH3, {color: theme.text}]}>{children}</Text>,
+                  // 단락 스타일
+                  p: ({children}) => <Text style={[styles.markdownP, {color: theme.text}]}>{children}</Text>,
+                  // 목록 스타일
+                  li: ({children}) => <Text style={[styles.markdownLi, {color: theme.text}]}>{children}</Text>,
+                  // 코드 스타일
+                  code: ({children}) => <Text style={[styles.markdownCode, {color: theme.text, backgroundColor: theme.inputBg}]}>{children}</Text>,
+                  // 인용구 스타일
+                  blockquote: ({children}) => <Text style={[styles.markdownBlockquote, {color: theme.textSecondary, borderLeftColor: theme.primary}]}>{children}</Text>,
+                }}
               >
                 {content || '# 문서가 비어있습니다\n\n편집 모드에서 문서를 작성해보세요.'}
               </ReactMarkdown>
@@ -1425,6 +1439,50 @@ const styles = StyleSheet.create({
   noteTime: {
     fontSize: 12,
     fontStyle: 'italic',
+  },
+  // Markdown 렌더링 스타일
+  markdownH1: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    marginTop: 8,
+  },
+  markdownH2: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    marginTop: 8,
+  },
+  markdownH3: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  markdownP: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 12,
+  },
+  markdownLi: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 4,
+  },
+  markdownCode: {
+    fontSize: 14,
+    fontFamily: 'monospace',
+    padding: 4,
+    borderRadius: 4,
+    marginHorizontal: 2,
+  },
+  markdownBlockquote: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    borderLeftWidth: 4,
+    paddingLeft: 16,
+    marginVertical: 8,
+    marginLeft: 8,
   },
 
 });
