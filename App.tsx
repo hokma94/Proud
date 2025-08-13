@@ -249,14 +249,18 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
     try {
       const newNote = {
         title: '새 Note',
-        content: '# 새 Note\n\n여기에 내용을 작성하세요...',
+        content: '', // 빈 내용으로 시작
       };
       const noteId = await firestoreHelpers.createNote('business-notes', newNote);
       const createdNote = { id: noteId, ...newNote, createdAt: new Date(), updatedAt: new Date() };
       setCurrentNote(createdNote);
     } catch (error) {
       console.error('Note 생성 실패:', error);
-      Alert.alert('오류', 'Note 생성에 실패했습니다.');
+      if (Platform.OS === 'web') {
+        window.alert('Note 생성에 실패했습니다.');
+      } else {
+        Alert.alert('오류', 'Note 생성에 실패했습니다.');
+      }
     }
   };
 
@@ -274,26 +278,33 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
 
   // Note 삭제
   const deleteNote = async (noteId: string) => {
-    Alert.alert(
-      'Note 삭제',
-      '이 Note를 삭제하시겠습니까?',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '삭제',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await firestoreHelpers.deleteNote('business-notes', noteId);
-              loadNotes();
-            } catch (error) {
-              console.error('Note 삭제 실패:', error);
-              Alert.alert('오류', 'Note 삭제에 실패했습니다.');
-            }
-          },
-        },
-      ]
-    );
+    // 웹 환경에서는 window.confirm 사용, 모바일에서는 Alert.alert 사용
+    const isConfirmed = Platform.OS === 'web' 
+      ? window.confirm('이 Note를 삭제하시겠습니까?')
+      : await new Promise((resolve) => {
+          Alert.alert(
+            'Note 삭제',
+            '이 Note를 삭제하시겠습니까?',
+            [
+              { text: '취소', style: 'cancel', onPress: () => resolve(false) },
+              { text: '삭제', style: 'destructive', onPress: () => resolve(true) },
+            ]
+          );
+        });
+
+    if (isConfirmed) {
+      try {
+        await firestoreHelpers.deleteNote('business-notes', noteId);
+        loadNotes();
+      } catch (error) {
+        console.error('Note 삭제 실패:', error);
+        if (Platform.OS === 'web') {
+          window.alert('Note 삭제에 실패했습니다.');
+        } else {
+          Alert.alert('오류', 'Note 삭제에 실패했습니다.');
+        }
+      }
+    }
   };
 
   // Note 편집 화면으로 이동
