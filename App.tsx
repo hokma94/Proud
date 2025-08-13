@@ -112,7 +112,7 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
           >
             <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
           </TouchableOpacity>
-          <Text style={[styles.title, { color: '#ffffff' }]}>시니어 사업</Text>
+          <Text style={[styles.title, { color: '#ffffff' }]}>프라우드 사업</Text>
           <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
             사업 리서치 자료
           </Text>
@@ -121,7 +121,7 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
         {/* 페이지 내용 영역 */}
         <View style={[styles.contentContainer, { backgroundColor: theme.surface }]}>
           <Text style={[styles.contentText, { color: theme.text }]}>
-            시니어 사업 리서치 페이지입니다.
+            프라우드 사업 리서치 페이지입니다.
           </Text>
           <Text style={[styles.contentSubText, { color: theme.textSecondary }]}>
             Notion Note 기능과 유사한 위키 페이지 기능을 구현할 예정입니다.
