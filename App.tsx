@@ -16,6 +16,8 @@ import {
   useColorScheme,
   ScrollView,
 } from 'react-native';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { LinearGradient } from 'expo-linear-gradient';
 import { firestoreHelpers } from './firebase';
 import { Linking } from 'react-native';
@@ -90,6 +92,49 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const theme = colors[isDark ? 'dark' : 'light'];
+  
+  const [content, setContent] = useState('');
+  const [isEditing, setIsEditing] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Firebase에서 문서 내용 불러오기
+  useEffect(() => {
+    loadDocument();
+  }, []);
+
+  // 문서 불러오기
+  const loadDocument = async () => {
+    try {
+      setIsLoading(true);
+      const doc = await firestoreHelpers.getDocument('business-research', 'main');
+      if (doc && doc.content) {
+        setContent(doc.content);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error('문서 불러오기 실패:', error);
+      setIsLoading(false);
+    }
+  };
+
+  // 문서 저장하기 (자동 저장)
+  const saveDocument = async (newContent: string) => {
+    try {
+      await firestoreHelpers.setDocument('business-research', 'main', {
+        content: newContent,
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      console.error('문서 저장 실패:', error);
+    }
+  };
+
+  // 내용 변경 시 자동 저장
+  const handleContentChange = (text: string) => {
+    setContent(text);
+    // 디바운스된 자동 저장
+    setTimeout(() => saveDocument(text), 1000);
+  };
 
   return (
     <LinearGradient
@@ -118,14 +163,72 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
           </Text>
         </View>
 
-        {/* 페이지 내용 영역 */}
-        <View style={[styles.contentContainer, { backgroundColor: theme.surface }]}>
-          <Text style={[styles.contentText, { color: theme.text }]}>
-            시니어 사업 리서치 페이지입니다.
-          </Text>
-          <Text style={[styles.contentSubText, { color: theme.textSecondary }]}>
-            Notion Note 기능과 유사한 위키 페이지 기능을 구현할 예정입니다.
-          </Text>
+        {/* 편집/보기 모드 토글 버튼 */}
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              isEditing && { backgroundColor: theme.primary }
+            ]}
+            onPress={() => setIsEditing(true)}
+          >
+            <Text style={[
+              styles.toggleButtonText,
+              { color: isEditing ? '#ffffff' : theme.textSecondary }
+            ]}>
+              편집
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              !isEditing && { backgroundColor: theme.primary }
+            ]}
+            onPress={() => setIsEditing(false)}
+          >
+            <Text style={[
+              styles.toggleButtonText,
+              { color: !isEditing ? '#ffffff' : theme.textSecondary }
+            ]}>
+              보기
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Markdown 에디터/뷰어 */}
+        <View style={[styles.editorContainer, { backgroundColor: theme.surface }]}>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <Text style={[styles.loadingText, { color: theme.textSecondary }]}>
+                문서를 불러오는 중...
+              </Text>
+            </View>
+          ) : isEditing ? (
+            <TextInput
+              style={[
+                styles.markdownInput,
+                {
+                  color: theme.text,
+                  backgroundColor: theme.inputBg,
+                  borderColor: theme.border,
+                }
+              ]}
+              placeholder="여기에 Markdown 형식으로 문서를 작성하세요..."
+              placeholderTextColor={theme.textSecondary}
+              value={content}
+              onChangeText={handleContentChange}
+              multiline
+              textAlignVertical="top"
+            />
+          ) : (
+            <ScrollView style={styles.markdownViewer}>
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+              >
+                {content || '# 문서가 비어있습니다\n\n편집 모드에서 문서를 작성해보세요.'}
+              </ReactMarkdown>
+            </ScrollView>
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -997,6 +1100,51 @@ const styles = StyleSheet.create({
   contentSubText: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 12,
+    padding: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  toggleButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  editorContainer: {
+    flex: 1,
+    margin: 20,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  markdownInput: {
+    flex: 1,
+    padding: 20,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderRadius: 16,
+  },
+  markdownViewer: {
+    flex: 1,
+    padding: 20,
   },
 
 });

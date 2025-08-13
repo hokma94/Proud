@@ -20,6 +20,7 @@ export const db = getFirestore(app);
 
 // Firestore 컬렉션 참조
 export const tasksCollection = collection(db, 'tasks');
+export const documentsCollection = collection(db, 'documents');
 
 // Firestore 헬퍼 함수들
 export const firestoreHelpers = {
@@ -146,6 +147,50 @@ export const firestoreHelpers = {
     }, (error) => {
       console.error('실시간 리스너 오류:', error);
     });
+  },
+
+  // 문서 가져오기
+  getDocument: async (collectionName, documentId) => {
+    try {
+      const docRef = doc(db, collectionName, documentId);
+      const docSnap = await getDocs(query(collection(db, collectionName), orderBy('updatedAt', 'desc')));
+      if (!docSnap.empty) {
+        const data = docSnap.docs[0].data();
+        return {
+          id: docSnap.docs[0].id,
+          content: data.content || '',
+          ...data,
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('문서 가져오기 실패:', error);
+      throw error;
+    }
+  },
+
+  // 문서 저장/업데이트
+  setDocument: async (collectionName, documentId, data) => {
+    try {
+      const docRef = doc(db, collectionName, documentId);
+      await updateDoc(docRef, {
+        ...data,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      // 문서가 없으면 새로 생성
+      try {
+        await addDoc(collection(db, collectionName), {
+          id: documentId,
+          ...data,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      } catch (createError) {
+        console.error('문서 생성 실패:', error);
+        throw createError;
+      }
+    }
   },
 };
 
