@@ -97,7 +97,7 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
         <View style={[commonStyles.header, { backgroundColor: 'transparent' }]}>
           <Text style={[commonStyles.title, { color: '#ffffff' }]}>Work Hub</Text>
           <Text style={[commonStyles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
-            다양한 프로토타입을 테스트해보세요
+            시니어 사업본부에서 진행 중인 업무를 확인해 보세요
           </Text>
         </View>
 
