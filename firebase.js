@@ -255,6 +255,22 @@ export const firestoreHelpers = {
       throw error;
     }
   },
+
+  // 기존 business-research 컬렉션 정리
+  cleanupOldData: async () => {
+    try {
+      const oldCollectionRef = collection(db, 'business-research');
+      const snapshot = await getDocs(oldCollectionRef);
+      
+      if (!snapshot.empty) {
+        const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deletePromises);
+        console.log('기존 business-research 데이터 정리 완료');
+      }
+    } catch (error) {
+      console.error('기존 데이터 정리 실패:', error);
+    }
+  },
 };
 
 export default app; 

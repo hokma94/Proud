@@ -219,9 +219,16 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentNote, setCurrentNote] = useState<any>(null);
 
-  // Firebase에서 Note 목록 불러오기
+  // Firebase에서 Note 목록 불러오기 및 기존 데이터 정리
   useEffect(() => {
-    loadNotes();
+    const initializeApp = async () => {
+      // 기존 테스트 데이터 정리
+      await firestoreHelpers.cleanupOldData();
+      // Note 목록 불러오기
+      await loadNotes();
+    };
+    
+    initializeApp();
   }, []);
 
   // Note 목록 불러오기
