@@ -88,10 +88,11 @@ const formatDate = (date: Date) => {
 // 프로토타입 선택 화면은 외부 파일에서 import
 
 // Note 편집 컴포넌트
-const NoteEditor = ({ note, onBack, onSave }: { 
+const NoteEditor = ({ note, onBack, onSave, onDelete }: { 
   note: any, 
   onBack: () => void, 
-  onSave: (noteId: string, content: string) => void 
+  onSave: (noteId: string, content: string) => void,
+  onDelete: (noteId: string) => void
 }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -100,6 +101,17 @@ const NoteEditor = ({ note, onBack, onSave }: {
   const [content, setContent] = useState(note?.content || '');
   // 새 Note인지 기존 Note인지에 따라 기본 모드 설정
   const [isEditing, setIsEditing] = useState(!note?.content || note.content.trim() === '');
+
+  // 뒤로가기 처리 - 내용이 비어있으면 Note 삭제
+  const handleBack = () => {
+    const trimmedContent = content.trim();
+    // 새 Note이고 내용이 비어있거나, 기존 Note에서 내용을 모두 지운 경우
+    if ((!note?.content || note.content.trim() === '') && trimmedContent === '') {
+      // 빈 Note 삭제
+      onDelete(note.id);
+    }
+    onBack();
+  };
 
   // 내용 변경 시 자동 저장
   const handleContentChange = (text: string) => {
@@ -131,7 +143,7 @@ const NoteEditor = ({ note, onBack, onSave }: {
         <View style={[styles.header, { backgroundColor: 'transparent' }]}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={onBack}
+            onPress={handleBack}
             activeOpacity={0.8}
           >
             <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
@@ -325,6 +337,7 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
         note={currentNote}
         onBack={backToList}
         onSave={saveNote}
+        onDelete={deleteNote}
       />
     );
   }
