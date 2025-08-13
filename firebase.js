@@ -192,6 +192,69 @@ export const firestoreHelpers = {
       }
     }
   },
+
+  // Note 목록 가져오기
+  getNotes: async (collectionName) => {
+    try {
+      const q = query(collection(db, collectionName), orderBy('updatedAt', 'desc'));
+      const snapshot = await getDocs(q);
+      const notes = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        notes.push({
+          id: doc.id,
+          title: data.title || '제목 없음',
+          content: data.content || '',
+          createdAt: data.createdAt?.toDate?.() || new Date(),
+          updatedAt: data.updatedAt?.toDate?.() || new Date(),
+        });
+      });
+      return notes;
+    } catch (error) {
+      console.error('Note 목록 가져오기 실패:', error);
+      throw error;
+    }
+  },
+
+  // Note 생성
+  createNote: async (collectionName, data) => {
+    try {
+      const docRef = await addDoc(collection(db, collectionName), {
+        ...data,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error('Note 생성 실패:', error);
+      throw error;
+    }
+  },
+
+  // Note 업데이트
+  updateNote: async (collectionName, noteId, data) => {
+    try {
+      const noteRef = doc(db, collectionName, noteId);
+      await updateDoc(noteRef, {
+        ...data,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error('Note 업데이트 실패:', error);
+      throw error;
+    }
+  },
+
+  // Note 삭제
+  deleteNote: async (collectionName, noteId) => {
+    try {
+      const noteRef = doc(db, collectionName, noteId);
+      await deleteDoc(noteRef);
+    } catch (error) {
+      console.error('Note 삭제 실패:', error);
+      throw error;
+    }
+  },
 };
 
 export default app; 

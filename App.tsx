@@ -87,53 +87,31 @@ const formatDate = (date: Date) => {
 
 // 프로토타입 선택 화면은 외부 파일에서 import
 
-// Business Research 앱 컴포넌트
-const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
+// Note 편집 컴포넌트
+const NoteEditor = ({ note, onBack, onSave }: { 
+  note: any, 
+  onBack: () => void, 
+  onSave: (noteId: string, content: string) => void 
+}) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const theme = colors[isDark ? 'dark' : 'light'];
   
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(note?.content || '');
   const [isEditing, setIsEditing] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Firebase에서 문서 내용 불러오기
-  useEffect(() => {
-    loadDocument();
-  }, []);
-
-  // 문서 불러오기
-  const loadDocument = async () => {
-    try {
-      setIsLoading(true);
-      const doc = await firestoreHelpers.getDocument('business-research', 'main');
-      if (doc && doc.content) {
-        setContent(doc.content);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.error('문서 불러오기 실패:', error);
-      setIsLoading(false);
-    }
-  };
-
-  // 문서 저장하기 (자동 저장)
-  const saveDocument = async (newContent: string) => {
-    try {
-      await firestoreHelpers.setDocument('business-research', 'main', {
-        content: newContent,
-        updatedAt: new Date(),
-      });
-    } catch (error) {
-      console.error('문서 저장 실패:', error);
-    }
-  };
 
   // 내용 변경 시 자동 저장
   const handleContentChange = (text: string) => {
     setContent(text);
     // 디바운스된 자동 저장
-    setTimeout(() => saveDocument(text), 1000);
+    setTimeout(() => onSave(note.id, text), 1000);
+  };
+
+  // 첫 번째 줄을 타이틀로 추출
+  const getTitle = (text: string) => {
+    const lines = text.split('\n');
+    const firstLine = lines.find(line => line.trim().length > 0);
+    return firstLine ? firstLine.replace(/^#+\s*/, '').trim() : '제목 없음';
   };
 
   return (
@@ -157,9 +135,11 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
           >
             <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
           </TouchableOpacity>
-          <Text style={[styles.title, { color: '#ffffff' }]}>시니어 사업</Text>
+          <Text style={[styles.title, { color: '#ffffff' }]}>
+            {getTitle(content)}
+          </Text>
           <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
-            사업 리서치 자료
+            {note ? '편집 중' : '새 Note'}
           </Text>
         </View>
 
@@ -197,13 +177,7 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
 
         {/* Markdown 에디터/뷰어 */}
         <View style={[styles.editorContainer, { backgroundColor: theme.surface }]}>
-          {isLoading ? (
-            <View style={styles.loadingContainer}>
-              <Text style={[styles.loadingText, { color: theme.textSecondary }]}>
-                문서를 불러오는 중...
-              </Text>
-            </View>
-          ) : isEditing ? (
+          {isEditing ? (
             <TextInput
               style={[
                 styles.markdownInput,
@@ -213,7 +187,7 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
                   borderColor: theme.border,
                 }
               ]}
-              placeholder="여기에 Markdown 형식으로 문서를 작성하세요..."
+              placeholder="여기에 Markdown 형식으로 문서를 작성하세요...&#10;&#10;# 첫 번째 줄이 Note의 제목이 됩니다"
               placeholderTextColor={theme.textSecondary}
               value={content}
               onChangeText={handleContentChange}
@@ -228,6 +202,204 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
                 {content || '# 문서가 비어있습니다\n\n편집 모드에서 문서를 작성해보세요.'}
               </ReactMarkdown>
             </ScrollView>
+          )}
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
+  );
+};
+
+// Business Research 앱 컴포넌트 (Note 목록)
+const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const theme = colors[isDark ? 'dark' : 'light'];
+  
+  const [notes, setNotes] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentNote, setCurrentNote] = useState<any>(null);
+
+  // Firebase에서 Note 목록 불러오기
+  useEffect(() => {
+    loadNotes();
+  }, []);
+
+  // Note 목록 불러오기
+  const loadNotes = async () => {
+    try {
+      setIsLoading(true);
+      const notesList = await firestoreHelpers.getNotes('business-notes');
+      setNotes(notesList);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Note 목록 불러오기 실패:', error);
+      setIsLoading(false);
+    }
+  };
+
+  // 새 Note 생성
+  const createNewNote = async () => {
+    try {
+      const newNote = {
+        title: '새 Note',
+        content: '# 새 Note\n\n여기에 내용을 작성하세요...',
+      };
+      const noteId = await firestoreHelpers.createNote('business-notes', newNote);
+      const createdNote = { id: noteId, ...newNote, createdAt: new Date(), updatedAt: new Date() };
+      setCurrentNote(createdNote);
+    } catch (error) {
+      console.error('Note 생성 실패:', error);
+      Alert.alert('오류', 'Note 생성에 실패했습니다.');
+    }
+  };
+
+  // Note 저장
+  const saveNote = async (noteId: string, content: string) => {
+    try {
+      const title = content.split('\n').find(line => line.trim().length > 0)?.replace(/^#+\s*/, '').trim() || '제목 없음';
+      await firestoreHelpers.updateNote('business-notes', noteId, { content, title });
+      // 목록 새로고침
+      loadNotes();
+    } catch (error) {
+      console.error('Note 저장 실패:', error);
+    }
+  };
+
+  // Note 삭제
+  const deleteNote = async (noteId: string) => {
+    Alert.alert(
+      'Note 삭제',
+      '이 Note를 삭제하시겠습니까?',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await firestoreHelpers.deleteNote('business-notes', noteId);
+              loadNotes();
+            } catch (error) {
+              console.error('Note 삭제 실패:', error);
+              Alert.alert('오류', 'Note 삭제에 실패했습니다.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Note 편집 화면으로 이동
+  const openNote = (note: any) => {
+    setCurrentNote(note);
+  };
+
+  // Note 목록으로 돌아가기
+  const backToList = () => {
+    setCurrentNote(null);
+  };
+
+  // Note 편집 화면이 열려있으면 NoteEditor 표시
+  if (currentNote) {
+    return (
+      <NoteEditor
+        note={currentNote}
+        onBack={backToList}
+        onSave={saveNote}
+      />
+    );
+  }
+
+  // Note 목록 화면
+  return (
+    <LinearGradient
+      colors={[theme.primary, theme.secondary]}
+      style={styles.gradientContainer}
+    >
+      <SafeAreaView style={styles.container}>
+        <StatusBar 
+          barStyle="light-content" 
+          backgroundColor="transparent"
+          translucent
+        />
+        
+        {/* 상단 제목 */}
+        <View style={[styles.header, { backgroundColor: 'transparent' }]}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={onBack}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
+          </TouchableOpacity>
+          <Text style={[styles.title, { color: '#ffffff' }]}>시니어 사업</Text>
+          <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
+            사업 리서치 Note 관리
+          </Text>
+        </View>
+
+        {/* 새 Note 생성 버튼 */}
+        <TouchableOpacity
+          style={[styles.createNoteButton, { backgroundColor: theme.surface }]}
+          onPress={createNewNote}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.createNoteButtonText, { color: theme.primary }]}>
+            + 새 Note 생성
+          </Text>
+        </TouchableOpacity>
+
+        {/* Note 목록 */}
+        <View style={styles.notesContainer}>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <Text style={[styles.loadingText, { color: theme.textSecondary }]}>
+                Note 목록을 불러오는 중...
+              </Text>
+            </View>
+          ) : notes.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
+                아직 Note가 없습니다.
+              </Text>
+              <Text style={[styles.emptySubText, { color: theme.textSecondary }]}>
+                새 Note를 생성해보세요!
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={notes}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[styles.noteItem, { backgroundColor: theme.surface }]}
+                  onPress={() => openNote(item)}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.noteHeader}>
+                    <Text style={[styles.noteTitle, { color: theme.text }]}>
+                      {item.title}
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.deleteNoteButton}
+                      onPress={() => deleteNote(item.id)}
+                    >
+                      <Text style={[styles.deleteNoteButtonText, { color: theme.danger }]}>
+                        삭제
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={[styles.notePreview, { color: theme.textSecondary }]}>
+                    {item.content.substring(0, 100)}...
+                  </Text>
+                  <Text style={[styles.noteTime, { color: theme.textSecondary }]}>
+                    {formatDate(item.updatedAt)}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item.id}
+              style={styles.notesList}
+              showsVerticalScrollIndicator={false}
+            />
           )}
         </View>
       </SafeAreaView>
@@ -1145,6 +1317,76 @@ const styles = StyleSheet.create({
   markdownViewer: {
     flex: 1,
     padding: 20,
+  },
+  createNoteButton: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  createNoteButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  notesContainer: {
+    flex: 1,
+    marginTop: 20,
+  },
+  notesList: {
+    paddingHorizontal: 20,
+  },
+  noteItem: {
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  noteHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  noteTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    flex: 1,
+    marginRight: 12,
+  },
+  deleteNoteButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  deleteNoteButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  notePreview: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  noteTime: {
+    fontSize: 12,
+    fontStyle: 'italic',
   },
 
 });
