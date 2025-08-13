@@ -446,8 +446,8 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  <Text style={[styles.notePreview, { color: theme.textSecondary }]}>
-                    {item.content.substring(0, 100)}...
+                  <Text style={[styles.notePreview, { color: theme.textSecondary }]} numberOfLines={2}>
+                    {item.content.replace(/^#+\s*/, '').trim() || '내용이 없습니다'}
                   </Text>
                   <Text style={[styles.noteTime, { color: theme.textSecondary }]}>
                     {formatDate(item.updatedAt)}
@@ -1429,6 +1429,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+    height: 120, // Note 목록 아이템 높이 통일
   },
   noteHeader: {
     flexDirection: 'row',
@@ -1458,6 +1459,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 8,
+    height: 40, // 2줄 고정 높이 (20px × 2)
+    overflow: 'hidden',
   },
   noteTime: {
     fontSize: 12,
