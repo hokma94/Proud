@@ -148,12 +148,14 @@ const NoteEditor = ({ note, onBack, onSave, onDelete }: {
           >
             <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
           </TouchableOpacity>
-          <Text style={[styles.title, { color: '#ffffff' }]}>
-            {getTitle(content)}
-          </Text>
-          <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
-            {note ? '편집 중' : '새 Note'}
-          </Text>
+          <View style={styles.titleContainer}>
+            <Text style={[styles.title, { color: '#ffffff' }]}>
+              {getTitle(content)}
+            </Text>
+            <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
+              {note ? '편집 중' : '새 Note'}
+            </Text>
+          </View>
         </View>
 
         {/* 편집/보기 모드 토글 버튼 */}
@@ -224,6 +226,13 @@ const NoteEditor = ({ note, onBack, onSave, onDelete }: {
                   code: ({children}) => <Text style={[styles.markdownCode, {color: theme.text, backgroundColor: theme.inputBg}]}>{children}</Text>,
                   // 인용구 스타일
                   blockquote: ({children}) => <Text style={[styles.markdownBlockquote, {color: theme.textSecondary, borderLeftColor: theme.primary}]}>{children}</Text>,
+                  // 표 스타일
+                  table: ({children}) => <View style={[styles.markdownTable, {borderColor: theme.border}]}>{children}</View>,
+                  thead: ({children}) => <View style={styles.markdownThead}>{children}</View>,
+                  tbody: ({children}) => <View style={styles.markdownTbody}>{children}</View>,
+                  tr: ({children}) => <View style={[styles.markdownTr, {borderBottomColor: theme.border}]}>{children}</View>,
+                  th: ({children}) => <Text style={[styles.markdownTh, {color: theme.text, borderColor: theme.border}]}>{children}</Text>,
+                  td: ({children}) => <Text style={[styles.markdownTd, {color: theme.text, borderColor: theme.border}]}>{children}</Text>,
                 }}
               >
                 {content || '# 문서가 비어있습니다\n\n편집 모드에서 문서를 작성해보세요.'}
@@ -1077,6 +1086,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  titleContainer: {
+    alignItems: 'center',
+    marginLeft: 60, // 뒤로가기 버튼 너비만큼 여백
+    marginRight: 60, // 오른쪽도 동일한 여백
+  },
   backButton: {
     position: 'absolute',
     top: 60,
@@ -1483,6 +1497,38 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     marginVertical: 8,
     marginLeft: 8,
+  },
+  // 표 스타일
+  markdownTable: {
+    borderWidth: 1,
+    borderRadius: 8,
+    marginVertical: 12,
+    overflow: 'hidden',
+  },
+  markdownThead: {
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  markdownTbody: {
+    backgroundColor: 'transparent',
+  },
+  markdownTr: {
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+  },
+  markdownTh: {
+    flex: 1,
+    padding: 12,
+    fontSize: 14,
+    fontWeight: 'bold',
+    borderRightWidth: 1,
+    textAlign: 'center',
+  },
+  markdownTd: {
+    flex: 1,
+    padding: 12,
+    fontSize: 14,
+    borderRightWidth: 1,
+    textAlign: 'center',
   },
 
 });
