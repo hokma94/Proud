@@ -85,6 +85,53 @@ const formatDate = (date: Date) => {
 
 // 프로토타입 선택 화면은 외부 파일에서 import
 
+// Business Research 앱 컴포넌트
+const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const theme = colors[isDark ? 'dark' : 'light'];
+
+  return (
+    <LinearGradient
+      colors={[theme.primary, theme.secondary]}
+      style={styles.gradientContainer}
+    >
+      <SafeAreaView style={styles.container}>
+        <StatusBar 
+          barStyle="light-content" 
+          backgroundColor="transparent"
+          translucent
+        />
+        
+        {/* 상단 제목 */}
+        <View style={[styles.header, { backgroundColor: 'transparent' }]}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={onBack}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
+          </TouchableOpacity>
+          <Text style={[styles.title, { color: '#ffffff' }]}>시니어 사업</Text>
+          <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
+            사업 리서치 자료
+          </Text>
+        </View>
+
+        {/* 페이지 내용 영역 */}
+        <View style={[styles.contentContainer, { backgroundColor: theme.surface }]}>
+          <Text style={[styles.contentText, { color: theme.text }]}>
+            시니어 사업 리서치 페이지입니다.
+          </Text>
+          <Text style={[styles.contentSubText, { color: theme.textSecondary }]}>
+            Notion Note 기능과 유사한 위키 페이지 기능을 구현할 예정입니다.
+          </Text>
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
+  );
+};
+
 // My Tasks 앱 컴포넌트
 const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
   const colorScheme = useColorScheme();
@@ -617,6 +664,8 @@ export default function App() {
     switch (currentPrototype) {
       case 'todo':
         return <MyTasksApp onBack={handleBackToSelector} />;
+      case 'business-research':
+        return <BusinessResearchApp onBack={handleBackToSelector} />;
       case '3d-gallery':
         Linking.openURL('https://ph-poc-3dgallery.netlify.app/');
         return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
@@ -925,6 +974,29 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  contentContainer: {
+    flex: 1,
+    margin: 20,
+    padding: 20,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  contentText: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  contentSubText: {
+    fontSize: 14,
+    lineHeight: 20,
   },
 
 });

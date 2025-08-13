@@ -31,6 +31,13 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
       color: '#667eea',
     },
     {
+      id: 'business-research',
+      title: 'Business Research',
+      description: '시니어 사업 리서치 자료 (실행 가능)',
+      icon: '📊',
+      color: '#06b6d4',
+    },
+    {
       id: '3d-gallery',
       title: '3D Gallery',
       description: '3D 갤러리 및 전시 공간 (실행 가능)',
@@ -88,7 +95,7 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
         
         {/* 상단 제목 */}
         <View style={[commonStyles.header, { backgroundColor: 'transparent' }]}>
-          <Text style={[commonStyles.title, { color: '#ffffff' }]}>Prototype Hub</Text>
+          <Text style={[commonStyles.title, { color: '#ffffff' }]}>Work Hub</Text>
           <Text style={[commonStyles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
             다양한 프로토타입을 테스트해보세요
           </Text>
