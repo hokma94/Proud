@@ -1078,18 +1078,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28, // 모바일에서 적절한 크기로 조정
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlign: 'center',
+    flexWrap: 'wrap', // 여러 줄로 표시 가능
+    maxWidth: '100%', // 컨테이너 너비에 맞춤
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14, // 모바일에서 적절한 크기로 조정
     fontWeight: '500',
+    textAlign: 'center',
   },
   titleContainer: {
     alignItems: 'center',
     marginLeft: 60, // 뒤로가기 버튼 너비만큼 여백
     marginRight: 60, // 오른쪽도 동일한 여백
+    minHeight: 80, // 최소 높이 보장
+    justifyContent: 'center', // 세로 중앙 정렬
   },
   backButton: {
     position: 'absolute',
@@ -1367,6 +1373,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 8,
+    minHeight: 300, // 모바일에서 최소 높이 보장
   },
   markdownInput: {
     flex: 1,
@@ -1376,10 +1383,12 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     borderWidth: 1,
     borderRadius: 16,
+    minHeight: 260, // 모바일에서 최소 높이 보장
   },
   markdownViewer: {
     flex: 1,
     padding: 20,
+    minHeight: 260, // 모바일에서 최소 높이 보장
   },
   createNoteButton: {
     marginHorizontal: 20,
