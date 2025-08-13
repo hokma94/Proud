@@ -25,7 +25,7 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
   const prototypes = [
     {
       id: 'todo',
-      title: 'My Tasks',
+      title: 'To Do',
       description: '할일 관리 앱 (Firebase 실시간 동기화)',
       icon: '📝',
       color: '#667eea',

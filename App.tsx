@@ -468,7 +468,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
           >
             <Text style={[styles.backButtonText, { color: '#ffffff' }]}>← 뒤로</Text>
           </TouchableOpacity>
-          <Text style={[styles.title, { color: '#ffffff' }]}>My Tasks</Text>
+          <Text style={[styles.title, { color: '#ffffff' }]}>To Do</Text>
           <Text style={[styles.subtitle, { color: 'rgba(255, 255, 255, 0.8)' }]}>
             {activeTasks.length}개의 할일
           </Text>
@@ -523,7 +523,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
               styles.tabButtonText,
               { color: !showDeleted ? theme.text : theme.textSecondary }
             ]}>
-              활성 ({activeTasks.length})
+              진행 중 ({activeTasks.length})
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -537,7 +537,7 @@ const MyTasksApp = ({ onBack }: { onBack: () => void }) => {
               styles.tabButtonText,
               { color: showDeleted ? theme.text : theme.textSecondary }
             ]}>
-              삭제됨 ({deletedTasks.length})
+              완료 ({deletedTasks.length})
             </Text>
           </TouchableOpacity>
         </View>
