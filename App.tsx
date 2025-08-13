@@ -98,7 +98,7 @@ const NoteEditor = ({ note, onBack, onSave }: {
   const theme = colors[isDark ? 'dark' : 'light'];
   
   const [content, setContent] = useState(note?.content || '');
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false); // 기본값을 보기 모드로 변경
 
   // 내용 변경 시 자동 저장
   const handleContentChange = (text: string) => {
@@ -388,7 +388,10 @@ const BusinessResearchApp = ({ onBack }: { onBack: () => void }) => {
                     </Text>
                     <TouchableOpacity
                       style={styles.deleteNoteButton}
-                      onPress={() => deleteNote(item.id)}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        deleteNote(item.id);
+                      }}
                     >
                       <Text style={[styles.deleteNoteButtonText, { color: theme.danger }]}>
                         삭제
@@ -1381,6 +1384,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
   },
   deleteNoteButtonText: {
     fontSize: 12,
