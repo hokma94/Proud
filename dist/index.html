@@ -1,350 +1,69 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProudBiz - Work Hub</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .header p {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        .prototype-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .prototype-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .prototype-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            border-color: #667eea;
-        }
-
-        .prototype-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .prototype-icon {
-            font-size: 3rem;
-            margin-right: 20px;
-            min-width: 60px;
-        }
-
-        .prototype-info {
-            flex: 1;
-        }
-
-        .prototype-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 8px;
-        }
-
-        .prototype-description {
-            color: #718096;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-
-        .prototype-status {
-            align-self: flex-start;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: white;
-            margin-top: 15px;
-        }
-
-        .status-available {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-        }
-
-        .status-coming-soon {
-            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-        }
-
-        .stats-section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-            border-radius: 15px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            color: #4a5568;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 40px;
-            padding: 20px;
-            opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.2rem;
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .prototype-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .prototype-card {
-                padding: 25px;
-            }
-        }
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>ProudBiz</title>
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>
-                <span>🏢</span>
-                <span>ProudBiz</span>
-            </h1>
-            <p>프라우드 사업본부에서 진행 중인 업무를 확인해 보세요</p>
-        </div>
+  <meta name="theme-color" content="#667eea">
+  <link rel="icon" href="/favicon-new.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon-new.ico" type="image/x-icon" /></head>
 
-        <div class="stats-section">
-            <h2 style="text-align: center; color: #667eea; margin-bottom: 25px; font-size: 1.8rem;">📊 업무 현황</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">실행 가능한 프로토타입</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">준비 중인 프로토타입</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">8</div>
-                    <div class="stat-label">전체 프로젝트</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">진행률</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="prototype-grid">
-            <div class="prototype-card" onclick="window.location.href='#'">
-                <div class="prototype-header">
-                    <div class="prototype-icon">📝</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">To Do</div>
-                        <div class="prototype-description">할일 관리 앱 (Firebase 실시간 동기화)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-available">실행 가능</div>
-            </div>
-
-            <div class="prototype-card" onclick="window.location.href='#'">
-                <div class="prototype-header">
-                    <div class="prototype-icon">📊</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">Business Research</div>
-                        <div class="prototype-description">시니어 사업 리서치 자료 (실행 가능)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-available">실행 가능</div>
-            </div>
-
-            <div class="prototype-card" onclick="window.open('https://ph-poc-3dgallery.netlify.app/', '_blank')">
-                <div class="prototype-header">
-                    <div class="prototype-icon">🏛️</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">3D Gallery</div>
-                        <div class="prototype-description">3D 갤러리 및 전시 공간 (실행 가능)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-available">실행 가능</div>
-            </div>
-
-            <div class="prototype-card" onclick="window.open('https://proud-prototype1.netlify.app/', '_blank')">
-                <div class="prototype-header">
-                    <div class="prototype-icon">📱</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">Feed & Store Prototype</div>
-                        <div class="prototype-description">시니어 그림을 사고 팔 수 있는 앱 프로토타입 (실행 가능)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-available">실행 가능</div>
-            </div>
-
-            <div class="prototype-card" onclick="window.location.href='#'">
-                <div class="prototype-header">
-                    <div class="prototype-icon">🎨</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">Arts&Culture</div>
-                        <div class="prototype-description">예술과 문화를 탐험하는 앱 (준비 중)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-coming-soon">준비 중</div>
-            </div>
-
-            <div class="prototype-card" onclick="window.location.href='#'">
-                <div class="prototype-header">
-                    <div class="prototype-icon">🎮</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">Mini Games</div>
-                        <div class="prototype-description">미니 게임 컬렉션 (준비 중)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-coming-soon">준비 중</div>
-            </div>
-
-            <div class="prototype-card" onclick="window.location.href='#'">
-                <div class="prototype-header">
-                    <div class="prototype-icon">🎉</div>
-                    <div class="prototype-info">
-                        <div class="prototype-title">Event #1</div>
-                        <div class="prototype-description">특별 이벤트 및 프로모션 (준비 중)</div>
-                    </div>
-                </div>
-                <div class="prototype-status status-coming-soon">준비 중</div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>&copy; 2024 ProudBiz. 모든 권리 보유.</p>
-            <p>프라우드 사업본부 - Work Hub</p>
-        </div>
-    </div>
-
-    <script>
-        // 프로토타입 카드 클릭 이벤트 (링크가 없는 경우)
-        document.querySelectorAll('.prototype-card').forEach(card => {
-            if (!card.onclick || card.onclick.toString().includes('window.location.href=\'#\'')) {
-                card.addEventListener('click', function() {
-                    const title = this.querySelector('.prototype-title').textContent;
-                    alert(`${title} - 준비 중입니다!\n곧 만나보실 수 있어요! 🚀`);
-                });
-            }
-        });
-
-        // 통계 애니메이션
-        function animateStats() {
-            const stats = document.querySelectorAll('.stat-number');
-            stats.forEach(stat => {
-                const finalValue = stat.textContent;
-                const isPercentage = finalValue.includes('%');
-                const numericValue = isPercentage ? parseInt(finalValue) : parseInt(finalValue);
-                
-                if (isPercentage) {
-                    animateValue(stat, 0, numericValue, 2000, '%');
-                } else {
-                    animateValue(stat, 0, numericValue, 2000);
-                }
-            });
-        }
-
-        function animateValue(element, start, end, duration, suffix = '') {
-            const startTime = performance.now();
-            
-            function updateValue(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                const current = Math.floor(start + (end - start) * progress);
-                element.textContent = current + suffix;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateValue);
-                }
-            }
-            
-            requestAnimationFrame(updateValue);
-        }
-
-        // 페이지 로드 시 통계 애니메이션 시작
-        window.addEventListener('load', () => {
-            setTimeout(animateStats, 500);
-        });
-    </script>
+  <body>
+    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  <script src="/_expo/static/js/web/index-7ec0bb49b86339aa344dfe8218802c36.js" defer></script>
+  <script>
+    // favicon 설정 (한 번만 실행)
+    function setFavicon() {
+      // 이미 실행되었는지 확인
+      if (window.faviconSet) return;
+      window.faviconSet = true;
+      
+      // 기존 favicon 링크들 모두 제거
+      const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
+      existingFavicons.forEach(link => link.remove());
+      
+      // 새로운 favicon 링크들 생성
+      const timestamp = Date.now();
+      
+      // ICO favicon만 설정 (중복 방지)
+      const icoLink = document.createElement('link');
+      icoLink.rel = 'icon';
+      icoLink.href = '/favicon-new.ico?v=' + timestamp;
+      icoLink.type = 'image/x-icon';
+      document.head.appendChild(icoLink);
+      
+      console.log('Favicon set once with timestamp:', timestamp);
+    }
+    
+    // DOMContentLoaded 시에만 실행
+    document.addEventListener('DOMContentLoaded', setFavicon);
+  </script>
 </body>
 </html>

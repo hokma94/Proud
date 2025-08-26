@@ -1,4 +1,4 @@
-# MyVibeApp - Prototype Hub
+# ProudBiz - Prototype Hub
 
 ## 🌐 Live Demo
 **URL**: https://idyllic-manatee-82b1df.netlify.app/

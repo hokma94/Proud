@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- 배경 원 -->
+  <circle cx="16" cy="16" r="15" fill="#667eea"/>
+  
+  <!-- 🏢 건물 이모지 스타일 -->
+  <!-- 메인 건물 -->
+  <rect x="8" y="14" width="16" height="10" fill="white" rx="1"/>
+  
+  <!-- 건물 상단 -->
+  <rect x="10" y="12" width="12" height="2" fill="white" rx="1"/>
+  
+  <!-- 창문들 -->
+  <rect x="10" y="16" width="2" height="2" fill="#667eea"/>
+  <rect x="14" y="16" width="2" height="2" fill="#667eea"/>
+  <rect x="18" y="16" width="2" height="2" fill="#667eea"/>
+  <rect x="10" y="20" width="2" height="2" fill="#667eea"/>
+  <rect x="14" y="20" width="2" height="2" fill="#667eea"/>
+  <rect x="18" y="20" width="2" height="2" fill="#667eea"/>
+  
+  <!-- 입구 -->
+  <rect x="14" y="22" width="4" height="2" fill="#667eea"/>
+  
+  <!-- 깃발 -->
+  <rect x="20" y="10" width="1" height="3" fill="#ffd700"/>
+  <path d="M20 10 L22 9 L22 11 L20 10 Z" fill="#ffd700"/>
+</svg>
