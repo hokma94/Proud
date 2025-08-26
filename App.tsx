@@ -1011,24 +1011,9 @@ export default function App() {
             </TouchableOpacity>
           </View>
         );
-      case 'feed-view':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Feed View - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'grim-store':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Grim Store - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
+      case 'feed-store':
+        Linking.openURL('https://proud-prototype1.netlify.app/');
+        return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
       case 'mini-games':
         return (
           <View style={styles.comingSoonContainer}>
