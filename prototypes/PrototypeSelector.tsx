@@ -45,16 +45,16 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
       color: '#f59e0b',
     },
     {
-      id: 'feed-store',
-      title: 'Feed & Store Prototype',
+      id: 'grim-store',
+      title: 'Grim Store',
       description: '시니어 그림을 사고 팔 수 있는 앱 프로토타입 (실행 가능)',
-      icon: '📱',
+      icon: '🛒',
       color: '#ef4444',
     },
     {
-      id: 'arts-culture',
-      title: 'Arts&Culture',
-      description: '예술과 문화를 탐험하는 앱 (준비 중)',
+      id: 'draw-play',
+      title: 'Draw&Play',
+      description: '드로잉과 미니게임 중심의 데일리 미션형 인지강화 앱 프로토타입 (실행 가능)',
       icon: '🎨',
       color: '#10b981',
     },
@@ -110,8 +110,10 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
               onPress={() => {
                 if (prototype.id === '3d-gallery') {
                   Linking.openURL('https://ph-poc-3dgallery.netlify.app/');
-                } else if (prototype.id === 'feed-store') {
+                } else if (prototype.id === 'grim-store') {
                   Linking.openURL('https://proud-prototype1.netlify.app/');
+                } else if (prototype.id === 'draw-play') {
+                  Linking.openURL('https://proud-prototype2.netlify.app/');
                 } else {
                   onSelectPrototype(prototype.id);
                 }
@@ -132,13 +134,13 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
               <View style={[
                 styles.prototypeStatus, 
                 { 
-                  backgroundColor: (prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'feed-store') 
+                  backgroundColor: (prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'grim-store' || prototype.id === 'draw-play') 
                     ? '#fbbf24' // 노란색 (실행 가능)
                     : '#9ca3af' // 회색 (준비 중)
                 }
               ]}>
                 <Text style={styles.prototypeStatusText}>
-                  {prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'feed-store' ? '실행 가능' : '준비 중'}
+                  {prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'grim-store' || prototype.id === 'draw-play' ? '실행 가능' : '준비 중'}
                 </Text>
               </View>
             </TouchableOpacity>

@@ -1011,8 +1011,11 @@ export default function App() {
             </TouchableOpacity>
           </View>
         );
-      case 'feed-store':
+      case 'grim-store':
         Linking.openURL('https://proud-prototype1.netlify.app/');
+        return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
+      case 'draw-play':
+        Linking.openURL('https://proud-prototype2.netlify.app/');
         return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
       case 'mini-games':
         return (
