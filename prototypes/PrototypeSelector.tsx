@@ -53,7 +53,7 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
     },
     {
       id: 'draw-play',
-      title: 'Draw&Play',
+      title: 'Draw & Play',
       description: '드로잉과 미니게임 중심의 데일리 미션형 인지강화 앱 프로토타입 (실행 가능)',
       icon: '🎨',
       color: '#10b981',
