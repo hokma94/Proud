@@ -24,32 +24,20 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
 
   const prototypes = [
     {
-      id: 'todo',
-      title: 'To Do',
-      description: '할일 관리 앱 (Firebase 실시간 동기화)',
-      icon: '📝',
-      color: '#667eea',
+      id: 'gryb-online',
+      title: '그림약방 온라인 프로그램',
+      description: '그림약방 온라인 프로그램',
+      icon: '🎨',
+      color: '#10b981',
+      url: 'https://gryb-online.vercel.app',
     },
     {
-      id: 'business-research',
-      title: 'Business Research',
-      description: '시니어 사업 리서치 자료 (실행 가능)',
-      icon: '📊',
-      color: '#06b6d4',
-    },
-    {
-      id: '3d-gallery',
-      title: '3D Gallery',
-      description: '3D 갤러리 및 전시 공간 (실행 가능)',
-      icon: '🏛️',
-      color: '#f59e0b',
-    },
-    {
-      id: 'grim-store',
-      title: 'Grim Store',
-      description: '시니어 그림을 사고 팔 수 있는 앱 프로토타입 (실행 가능)',
-      icon: '🛒',
-      color: '#ef4444',
+      id: 'proud100',
+      title: 'Proud100 브랜드 가이드',
+      description: 'Proud100 브랜드 가이드',
+      icon: '📖',
+      color: '#8b5cf6',
+      url: 'https://proud-bi.netlify.app',
     },
     {
       id: 'draw-play',
@@ -59,18 +47,32 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
       color: '#10b981',
     },
     {
-      id: 'mini-games',
-      title: 'Mini Games',
-      description: '미니 게임 컬렉션 (준비 중)',
-      icon: '🎮',
+      id: 'grim-store',
+      title: 'Grim Store',
+      description: '시니어 그림을 사고 팔 수 있는 앱 프로토타입 (실행 가능)',
+      icon: '🛒',
+      color: '#ef4444',
+    },
+    {
+      id: '3d-gallery',
+      title: '3D Gallery',
+      description: '3D 갤러리 및 전시 공간 (실행 가능)',
+      icon: '🏛️',
+      color: '#f59e0b',
+    },
+    {
+      id: 'business-research',
+      title: 'Business Research',
+      description: '시니어 사업 리서치 자료 (실행 가능)',
+      icon: '📊',
       color: '#06b6d4',
     },
     {
-      id: 'event-1',
-      title: 'Event #1',
-      description: '특별 이벤트 및 프로모션 (준비 중)',
-      icon: '🎉',
-      color: '#ec4899',
+      id: 'todo',
+      title: 'To Do',
+      description: '할일 관리 앱 (Firebase 실시간 동기화)',
+      icon: '📝',
+      color: '#667eea',
     },
   ];
 
@@ -108,7 +110,9 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
                 },
               ]}
               onPress={() => {
-                if (prototype.id === '3d-gallery') {
+                if (prototype.url) {
+                  Linking.openURL(prototype.url);
+                } else if (prototype.id === '3d-gallery') {
                   Linking.openURL('https://ph-poc-3dgallery.netlify.app/');
                 } else if (prototype.id === 'grim-store') {
                   Linking.openURL('https://proud-prototype1.netlify.app/');
@@ -134,13 +138,13 @@ const PrototypeSelector: React.FC<PrototypeSelectorProps> = ({ onSelectPrototype
               <View style={[
                 styles.prototypeStatus, 
                 { 
-                  backgroundColor: (prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'grim-store' || prototype.id === 'draw-play') 
+                  backgroundColor: (prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'grim-store' || prototype.id === 'draw-play' || prototype.id === 'proud100' || prototype.id === 'gryb-online') 
                     ? '#fbbf24' // 노란색 (실행 가능)
                     : '#9ca3af' // 회색 (준비 중)
                 }
               ]}>
                 <Text style={styles.prototypeStatusText}>
-                  {prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'grim-store' || prototype.id === 'draw-play' ? '실행 가능' : '준비 중'}
+                  {prototype.id === 'todo' || prototype.id === 'business-research' || prototype.id === '3d-gallery' || prototype.id === 'grim-store' || prototype.id === 'draw-play' || prototype.id === 'proud100' || prototype.id === 'gryb-online' ? '실행 가능' : '준비 중'}
                 </Text>
               </View>
             </TouchableOpacity>

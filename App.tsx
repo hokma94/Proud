@@ -1017,24 +1017,6 @@ export default function App() {
       case 'draw-play':
         Linking.openURL('https://proud-prototype2.netlify.app/');
         return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
-      case 'mini-games':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Mini Games - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'event-1':
-        return (
-          <View style={styles.comingSoonContainer}>
-            <Text style={styles.comingSoonText}>Event #1 - 준비 중입니다!</Text>
-            <TouchableOpacity style={styles.backToSelectorButton} onPress={handleBackToSelector}>
-              <Text style={styles.backToSelectorButtonText}>프로토타입 선택으로 돌아가기</Text>
-            </TouchableOpacity>
-          </View>
-        );
       default:
         return <PrototypeSelector onSelectPrototype={handleSelectPrototype} />;
     }
